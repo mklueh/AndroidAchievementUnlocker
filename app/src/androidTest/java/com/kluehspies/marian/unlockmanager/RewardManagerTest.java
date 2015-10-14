@@ -3,28 +3,28 @@ package com.kluehspies.marian.unlockmanager;
 import android.app.Application;
 import android.test.ApplicationTestCase;
 
-import com.kluehspies.marian.unlockmanager.listener.UnlockListener;
-import com.kluehspies.marian.unlockmanager.manager.UnlockManager;
-import com.kluehspies.marian.unlockmanager.trigger.IUnlockTrigger;
-import com.kluehspies.marian.unlockmanager.trigger.UnlockTrigger;
+import com.kluehspies.marian.unlockmanager.listener.RewardListener;
+import com.kluehspies.marian.unlockmanager.manager.RewardManager;
+import com.kluehspies.marian.unlockmanager.trigger.ITrigger;
+import com.kluehspies.marian.unlockmanager.trigger.Trigger;
 
 /**
  * Created by Marian on 30.05.2015.
  */
-public class UnlockManagerTest extends ApplicationTestCase<Application> implements UnlockListener {
+public class RewardManagerTest extends ApplicationTestCase<Application> implements RewardListener {
 
     private boolean available = false;
     private boolean unlocked = false;
 
     private int resourceID = 0;
-    private UnlockManager unlockManager;
-    private UnlockTrigger unlockTrigger;
+    private RewardManager unlockManager;
+    private Trigger unlockTrigger;
 
-    public UnlockManagerTest() {
+    public RewardManagerTest() {
         super(Application.class);
     }
 
-    class SampleTrigger extends UnlockTrigger {
+    class SampleTrigger extends Trigger {
 
     }
 
@@ -33,10 +33,10 @@ public class UnlockManagerTest extends ApplicationTestCase<Application> implemen
         super.setUp();
         available = false;
         unlocked = false;
-        unlockManager = new UnlockManager();
+        unlockManager = new RewardManager();
         unlockTrigger = new SampleTrigger();
         unlockManager.bindListener(this, resourceID);
-        unlockManager.bindTrigger(unlockTrigger = new UnlockTrigger(), resourceID);
+        unlockManager.bindTrigger(unlockTrigger = new Trigger(), resourceID);
     }
 
     public void testUnlockSuccess() throws Exception {
@@ -60,22 +60,22 @@ public class UnlockManagerTest extends ApplicationTestCase<Application> implemen
     }
 
     @Override
-    public void unlockNotAvailable(int resourceID, IUnlockTrigger trigger) {
+    public void rewardNotAvailable(int resourceID, ITrigger trigger) {
         available = false;
     }
 
     @Override
-    public void unlockAvailable(int resourceID, IUnlockTrigger trigger) {
+    public void rewardAvailable(int resourceID, ITrigger trigger) {
         available = true;
     }
 
     @Override
-    public void unlockSucceeded(int resourceID, IUnlockTrigger trigger) {
+    public void unlockSucceeded(int resourceID, ITrigger trigger) {
         unlocked = true;
     }
 
     @Override
-    public void unlockFailed(int resourceID, IUnlockTrigger trigger) {
+    public void unlockFailed(int resourceID, ITrigger trigger) {
         unlocked = false;
     }
 }

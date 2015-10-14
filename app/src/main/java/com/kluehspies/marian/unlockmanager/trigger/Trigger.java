@@ -1,16 +1,16 @@
 package com.kluehspies.marian.unlockmanager.trigger;
 
-import com.kluehspies.marian.unlockmanager.manager.IUnlockManager;
+import com.kluehspies.marian.unlockmanager.manager.IRewardManager;
 
 /**
  * Created by Marian on 01.06.2015.
  */
-public class UnlockTrigger implements IUnlockTrigger {
+public class Trigger implements ITrigger {
 
-    protected IUnlockManager unlockManager;
+    protected IRewardManager unlockManager;
 
     @Override
-    public void setUnlockManager(IUnlockManager unlockManager) {
+    public void setUnlockManager(IRewardManager unlockManager) {
         this.unlockManager = unlockManager;
     }
 

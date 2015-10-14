@@ -5,18 +5,18 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.kluehspies.marian.unlockmanager.listener.SimpleUnlockListener;
-import com.kluehspies.marian.unlockmanager.manager.IUnlockManager;
-import com.kluehspies.marian.unlockmanager.trigger.IUnlockTrigger;
+import com.kluehspies.marian.unlockmanager.manager.IRewardManager;
+import com.kluehspies.marian.unlockmanager.trigger.ITrigger;
 
 /**
  * Created by Marian on 21.01.2015.
  *
  * Default implementation of PersistenceHandler
  */
-public class SharedPreferencesHandler extends SimpleUnlockListener implements IUnlockTrigger {
+public class SharedPreferencesHandler extends SimpleUnlockListener implements ITrigger {
 
     private Context context;
-    private IUnlockManager unlockManager;
+    private IRewardManager unlockManager;
     private String sharedPreferencesKey;
     private SharedPreferences preferences;
 
@@ -31,7 +31,7 @@ public class SharedPreferencesHandler extends SimpleUnlockListener implements IU
     }
 
     @Override
-    public void unlockSucceeded(int resourceID, IUnlockTrigger trigger) {
+    public void unlockSucceeded(int resourceID, ITrigger trigger) {
         setUnlockState(resourceID, true);
     }
 
@@ -62,7 +62,7 @@ public class SharedPreferencesHandler extends SimpleUnlockListener implements IU
     }
 
     @Override
-    public void setUnlockManager(IUnlockManager unlockManager) {
+    public void setUnlockManager(IRewardManager unlockManager) {
         this.unlockManager = unlockManager;
     }
 }

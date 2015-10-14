@@ -4,14 +4,13 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.support.v4.app.NotificationCompat;
 
-import com.kluehspies.marian.example.R;
-import com.kluehspies.marian.unlockmanager.listener.UnlockListener;
-import com.kluehspies.marian.unlockmanager.trigger.IUnlockTrigger;
+import com.kluehspies.marian.unlockmanager.listener.RewardListener;
+import com.kluehspies.marian.unlockmanager.trigger.ITrigger;
 
 /**
  * Created by Marian on 14.10.2015.
  */
-public class PushNotifier implements UnlockListener {
+public class PushNotifier implements RewardListener {
 
     private Context context;
 
@@ -20,22 +19,22 @@ public class PushNotifier implements UnlockListener {
     }
 
     @Override
-    public void unlockNotAvailable(int resourceID, IUnlockTrigger trigger) {
+    public void rewardNotAvailable(int resourceID, ITrigger trigger) {
         showNotification("Unlock not available " + trigger.getClass().getSimpleName());
     }
 
     @Override
-    public void unlockAvailable(int resourceID, IUnlockTrigger trigger) {
+    public void rewardAvailable(int resourceID, ITrigger trigger) {
         showNotification("Unlock available " + trigger.getClass().getSimpleName());
     }
 
     @Override
-    public void unlockSucceeded(int resourceID, IUnlockTrigger trigger) {
+    public void unlockSucceeded(int resourceID, ITrigger trigger) {
         showNotification("Unlock succeeded " + trigger.getClass().getSimpleName());
     }
 
     @Override
-    public void unlockFailed(int resourceID, IUnlockTrigger trigger) {
+    public void unlockFailed(int resourceID, ITrigger trigger) {
         showNotification("Unlock failed " + trigger.getClass().getSimpleName());
     }
 

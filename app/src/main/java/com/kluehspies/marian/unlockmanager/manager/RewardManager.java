@@ -1,7 +1,7 @@
 package com.kluehspies.marian.unlockmanager.manager;
 
-import com.kluehspies.marian.unlockmanager.listener.UnlockListener;
-import com.kluehspies.marian.unlockmanager.trigger.IUnlockTrigger;
+import com.kluehspies.marian.unlockmanager.listener.RewardListener;
+import com.kluehspies.marian.unlockmanager.trigger.ITrigger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,33 +11,33 @@ import java.util.concurrent.ConcurrentMap;
 /**
  * Created by Marian on 19.01.2015.
  */
-public final class UnlockManager implements IUnlockManager {
+public final class RewardManager implements IRewardManager {
 
 
-    private ConcurrentMap<Integer, List<UnlockListener>> resourceListenerBindingMap = new ConcurrentHashMap<>();
-    private ConcurrentMap<IUnlockTrigger, List<Integer>> triggerResourceBindingMap = new ConcurrentHashMap<>();
-    private List<IUnlockTrigger> triggers = new ArrayList<>(5);
+    private ConcurrentMap<Integer, List<RewardListener>> resourceListenerBindingMap = new ConcurrentHashMap<>();
+    private ConcurrentMap<ITrigger, List<Integer>> triggerResourceBindingMap = new ConcurrentHashMap<>();
+    private List<ITrigger> triggers = new ArrayList<>(5);
 
     /**
-     * Bind UnlockListener to resource
+     * Bind RewardListener to resource
      *
-     * @param unlockListener
+     * @param rewardListener
      * @param resourceID
      */
-    public void bindListener(UnlockListener unlockListener, int resourceID) {
+    public void bindListener(RewardListener rewardListener, int resourceID) {
         if (!resourceListenerBindingMap.containsKey(resourceID))
-            resourceListenerBindingMap.put(resourceID, new ArrayList<UnlockListener>());
-        resourceListenerBindingMap.get(resourceID).add(unlockListener);
+            resourceListenerBindingMap.put(resourceID, new ArrayList<RewardListener>());
+        resourceListenerBindingMap.get(resourceID).add(rewardListener);
     }
 
     /**
-     * Bind UnlockListener to multiple resources
+     * Bind RewardListener to multiple resources
      *
-     * @param unlockListener
+     * @param rewardListener
      * @param resourceIDs
      */
-    public void bindListener(UnlockListener unlockListener, int... resourceIDs) {
-        for (int resourceID : resourceIDs) bindListener(unlockListener, resourceID);
+    public void bindListener(RewardListener rewardListener, int... resourceIDs) {
+        for (int resourceID : resourceIDs) bindListener(rewardListener, resourceID);
     }
 
     /**
@@ -46,7 +46,7 @@ public final class UnlockManager implements IUnlockManager {
      * @param trigger
      * @param resourceID
      */
-    public void bindTrigger(IUnlockTrigger trigger, int resourceID) {
+    public void bindTrigger(ITrigger trigger, int resourceID) {
         if (!isRegistered(trigger))
             registerTrigger(trigger);
         if (!triggerResourceBindingMap.containsKey(trigger))
@@ -61,16 +61,16 @@ public final class UnlockManager implements IUnlockManager {
      * @param trigger
      * @param resourceIDs
      */
-    public void bindTrigger(IUnlockTrigger trigger, int... resourceIDs) {
+    public void bindTrigger(ITrigger trigger, int... resourceIDs) {
         for (int resourceID : resourceIDs) bindTrigger(trigger, resourceID);
     }
 
     /**
-     * Injects UnlockManager instance into trigger
+     * Injects RewardManager instance into trigger
      *
      * @param trigger
      */
-    private void registerTrigger(IUnlockTrigger trigger) {
+    private void registerTrigger(ITrigger trigger) {
         trigger.setUnlockManager(this);
         triggers.add(trigger);
     }
@@ -81,8 +81,8 @@ public final class UnlockManager implements IUnlockManager {
      * @param trigger
      * @return
      */
-    private boolean isRegistered(IUnlockTrigger trigger) {
-        for (IUnlockTrigger unlockTrigger : triggers)
+    private boolean isRegistered(ITrigger trigger) {
+        for (ITrigger unlockTrigger : triggers)
             if (unlockTrigger != null && unlockTrigger.equals(trigger))
                 return true;
         return false;
@@ -90,22 +90,22 @@ public final class UnlockManager implements IUnlockManager {
 
 
     @Override
-    public void unlockNotAvailable(IUnlockTrigger trigger) {
+    public void unlockNotAvailable(ITrigger trigger) {
         notifyListeners(trigger, Type.NOT_AVAILABLE);
     }
 
     @Override
-    public void unlockAvailable(IUnlockTrigger trigger) {
+    public void unlockAvailable(ITrigger trigger) {
         notifyListeners(trigger, Type.AVAILABLE);
     }
 
     @Override
-    public void unlockSucceeded(IUnlockTrigger trigger) {
+    public void unlockSucceeded(ITrigger trigger) {
         notifyListeners(trigger, Type.SUCCEEDED);
     }
 
     @Override
-    public void unlockFailed(IUnlockTrigger trigger) {
+    public void unlockFailed(ITrigger trigger) {
         notifyListeners(trigger, Type.FAILED);
     }
 
@@ -116,12 +116,12 @@ public final class UnlockManager implements IUnlockManager {
      * @param trigger
      * @param type
      */
-    private void notifyListeners(IUnlockTrigger trigger, Type type) {
+    private void notifyListeners(ITrigger trigger, Type type) {
         List<Integer> resourceIDs = triggerResourceBindingMap.get(trigger);
         for (Integer resourceID : resourceIDs) {
-            List<UnlockListener> unlockListeners = resourceListenerBindingMap.get(resourceID);
-            if (unlockListeners != null)
-                for (UnlockListener listener : unlockListeners)
+            List<RewardListener> rewardListeners = resourceListenerBindingMap.get(resourceID);
+            if (rewardListeners != null)
+                for (RewardListener listener : rewardListeners)
                     if (listener != null)
                         switch (type) {
                             case SUCCEEDED:
@@ -131,10 +131,10 @@ public final class UnlockManager implements IUnlockManager {
                                 listener.unlockFailed(resourceID, trigger);
                                 break;
                             case AVAILABLE:
-                                listener.unlockAvailable(resourceID, trigger);
+                                listener.rewardAvailable(resourceID, trigger);
                                 break;
                             case NOT_AVAILABLE:
-                                listener.unlockNotAvailable(resourceID, trigger);
+                                listener.rewardNotAvailable(resourceID, trigger);
                                 break;
                         }
         }

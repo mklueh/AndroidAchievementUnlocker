@@ -4,12 +4,12 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 
-import com.kluehspies.marian.unlockmanager.trigger.UnlockTrigger;
+import com.kluehspies.marian.unlockmanager.trigger.Trigger;
 
 /**
  * Created by Marian on 14.10.2015.
  */
-public class Dialog extends UnlockTrigger {
+public class Dialog extends Trigger {
 
     private final AlertDialog dialog;
 

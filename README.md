@@ -1,10 +1,12 @@
 # acu
 
-ACU - Android Content Unlocker
+Android Achievement Unlocker
 
 This small library allows you to solve complex unlocking tasks.
 
 Example:
+
+Let´s say
 
 - You have two locked Resources (Images, Features, etc...) A, B and C
 
@@ -14,7 +16,7 @@ Example:
     3. User keeps the app for at least 2 days
 
 
-With ACU, you can define multiple unlock relations between triggers and resources
+With Android Achievement Unlocker, you can define multiple unlock relations between triggers and resources
 
 Examples:
 

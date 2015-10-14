@@ -8,14 +8,14 @@ import android.widget.LinearLayout;
 import com.kluehspies.marian.example.notifier.PushNotifier;
 import com.kluehspies.marian.example.notifier.ToastNotifier;
 import com.kluehspies.marian.example.trigger.Dialog;
-import com.kluehspies.marian.example.trigger.UnlockView;
-import com.kluehspies.marian.unlockmanager.listener.UnlockListener;
-import com.kluehspies.marian.unlockmanager.manager.UnlockManager;
-import com.kluehspies.marian.unlockmanager.trigger.IUnlockTrigger;
+import com.kluehspies.marian.example.trigger.View;
+import com.kluehspies.marian.unlockmanager.listener.RewardListener;
+import com.kluehspies.marian.unlockmanager.manager.RewardManager;
+import com.kluehspies.marian.unlockmanager.trigger.ITrigger;
 
-public class MainActivity extends AppCompatActivity implements UnlockListener {
+public class MainActivity extends AppCompatActivity implements RewardListener {
 
-    private UnlockManager unlockManager;
+    private RewardManager unlockManager;
     private LinearLayout parent;
     private Button reset;
 
@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity implements UnlockListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        unlockManager = new UnlockManager();
+        unlockManager = new RewardManager();
 
         //The listener will be called, if resources 1, 2, 3 or 4 are touched
         unlockManager.bindListener(this, 1, 2, 3, 4);
@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements UnlockListener {
         //Dialog can unlock resource 1
         unlockManager.bindTrigger(new Dialog(this).show(), 1);
 
-        UnlockView unlockView = new UnlockView(this);
+        View unlockView = new View(this);
         unlockManager.bindTrigger(unlockView, 1, 2);
         parent.addView(unlockView);
 
@@ -42,22 +42,22 @@ public class MainActivity extends AppCompatActivity implements UnlockListener {
 
 
     @Override
-    public void unlockNotAvailable(int resourceID, IUnlockTrigger trigger) {
+    public void rewardNotAvailable(int resourceID, ITrigger trigger) {
 
     }
 
     @Override
-    public void unlockAvailable(int resourceID, IUnlockTrigger trigger) {
+    public void rewardAvailable(int resourceID, ITrigger trigger) {
 
     }
 
     @Override
-    public void unlockSucceeded(int resourceID, IUnlockTrigger trigger) {
+    public void unlockSucceeded(int resourceID, ITrigger trigger) {
 
     }
 
     @Override
-    public void unlockFailed(int resourceID, IUnlockTrigger trigger) {
+    public void unlockFailed(int resourceID, ITrigger trigger) {
 
     }
 }
