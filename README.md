@@ -1,6 +1,4 @@
-# acu
-
-Android Achievement Unlocker
+# Android Achievement Unlocker
 
 This small library allows you to solve complex unlocking tasks.
 
