@@ -59,6 +59,11 @@ public class RewardManagerTest extends ApplicationTestCase<Application> implemen
         assertTrue(available);
     }
 
+    public void testUnregisterTrigger() {
+        unlockManager.unregisterTrigger(unlockTrigger);
+        assertFalse(unlockManager.isRegistered(unlockTrigger));
+    }
+
     @Override
     public void rewardNotAvailable(int resourceID, ITrigger trigger) {
         available = false;

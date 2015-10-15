@@ -75,13 +75,20 @@ public final class RewardManager implements IRewardManager {
         triggers.add(trigger);
     }
 
+    public void unregisterTrigger(ITrigger trigger) {
+        if (triggers.contains(trigger)) {
+            trigger.setUnlockManager(null);
+            triggers.remove(trigger);
+        }
+    }
+
     /**
      * Check if trigger is already registered
      *
      * @param trigger
      * @return
      */
-    private boolean isRegistered(ITrigger trigger) {
+    public boolean isRegistered(ITrigger trigger) {
         for (ITrigger unlockTrigger : triggers)
             if (unlockTrigger != null && unlockTrigger.equals(trigger))
                 return true;
