@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import com.kluehspies.marian.unlockmanager.listener.SimpleUnlockListener;
 import com.kluehspies.marian.unlockmanager.manager.IRewardManager;
 import com.kluehspies.marian.unlockmanager.trigger.ITrigger;
 
@@ -13,7 +12,7 @@ import com.kluehspies.marian.unlockmanager.trigger.ITrigger;
  *
  * Default implementation of PersistenceHandler
  */
-public class SharedPreferencesHandler extends SimpleUnlockListener implements ITrigger {
+public class SharedPreferencesHandler extends PersistenceHandler implements ITrigger {
 
     private Context context;
     private IRewardManager unlockManager;

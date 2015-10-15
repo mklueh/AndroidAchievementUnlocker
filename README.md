@@ -21,3 +21,9 @@ Examples:
     1. Unlock A, if user rates the app
     2. Unlock B, if user shares the app
     3. Unlock C, if user rates the app
+
+
+# Getting started
+
+
+
