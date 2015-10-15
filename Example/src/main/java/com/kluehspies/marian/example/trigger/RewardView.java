@@ -1,6 +1,7 @@
 package com.kluehspies.marian.example.trigger;
 
 import android.content.Context;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -10,11 +11,11 @@ import com.kluehspies.marian.unlockmanager.trigger.ITrigger;
 /**
  * Created by Marian on 14.10.2015.
  */
-public class View extends TextView implements ITrigger, View.OnClickListener, View.OnLongClickListener {
+public class RewardView extends TextView implements ITrigger, View.OnClickListener, View.OnLongClickListener {
 
     private IRewardManager manager;
 
-    public View(Context context) {
+    public RewardView(Context context) {
         super(context);
         setOnClickListener(this);
         setText("Long-Press to unlock");
@@ -35,4 +36,5 @@ public class View extends TextView implements ITrigger, View.OnClickListener, Vi
         manager.unlockSucceeded(this);
         return false;
     }
+
 }

@@ -8,7 +8,7 @@ import android.widget.LinearLayout;
 import com.kluehspies.marian.example.notifier.PushNotifier;
 import com.kluehspies.marian.example.notifier.ToastNotifier;
 import com.kluehspies.marian.example.trigger.Dialog;
-import com.kluehspies.marian.example.trigger.View;
+import com.kluehspies.marian.example.trigger.RewardView;
 import com.kluehspies.marian.unlockmanager.listener.RewardListener;
 import com.kluehspies.marian.unlockmanager.manager.RewardManager;
 import com.kluehspies.marian.unlockmanager.trigger.ITrigger;
@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements RewardListener {
         //Dialog can unlock resource 1
         unlockManager.bindTrigger(new Dialog(this).show(), 1);
 
-        View unlockView = new View(this);
+        RewardView unlockView = new RewardView(this);
         unlockManager.bindTrigger(unlockView, 1, 2);
         parent.addView(unlockView);
 
