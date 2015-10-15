@@ -75,19 +75,15 @@ public final class RewardManager implements IRewardManager {
         triggers.add(trigger);
     }
 
+    /**
+     * unregisters a trigger
+     * @param trigger
+     */
     public void unregisterTrigger(ITrigger trigger) {
         if (triggers.contains(trigger)) {
             trigger.setUnlockManager(null);
             triggers.remove(trigger);
         }
-    }
-
-    /**
-     * deregisters a trigger
-     * @param trigger
-     */
-    public void unregisterTrigger(ITrigger trigger){
-        if (triggers.contains(trigger)) triggers.remove(trigger);
     }
 
     /**

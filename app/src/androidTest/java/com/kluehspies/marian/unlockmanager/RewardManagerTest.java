@@ -59,11 +59,6 @@ public class RewardManagerTest extends ApplicationTestCase<Application> implemen
         assertTrue(available);
     }
 
-    public void testUnregisterTrigger() {
-        unlockManager.unregisterTrigger(unlockTrigger);
-        assertFalse(unlockManager.isRegistered(unlockTrigger));
-    }
-
     /**
      * tests if trigger gets unregistered
      */

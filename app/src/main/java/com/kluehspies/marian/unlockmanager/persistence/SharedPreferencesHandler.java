@@ -3,10 +3,6 @@ package com.kluehspies.marian.unlockmanager.persistence;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-<<<<<<< HEAD
-=======
-
->>>>>>> upstream/master
 import com.kluehspies.marian.unlockmanager.manager.IRewardManager;
 import com.kluehspies.marian.unlockmanager.trigger.ITrigger;
 
@@ -15,11 +11,8 @@ import com.kluehspies.marian.unlockmanager.trigger.ITrigger;
  *
  * Default implementation of PersistenceHandler
  */
-<<<<<<< HEAD
-public class SharedPreferencesHandler implements ITrigger {
-=======
+
 public class SharedPreferencesHandler extends PersistenceHandler implements ITrigger {
->>>>>>> upstream/master
 
     private Context context;
     private IRewardManager unlockManager;
