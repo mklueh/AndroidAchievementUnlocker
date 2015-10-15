@@ -83,6 +83,14 @@ public final class RewardManager implements IRewardManager {
     }
 
     /**
+     * deregisters a trigger
+     * @param trigger
+     */
+    public void unregisterTrigger(ITrigger trigger){
+        if (triggers.contains(trigger)) triggers.remove(trigger);
+    }
+
+    /**
      * Check if trigger is already registered
      *
      * @param trigger

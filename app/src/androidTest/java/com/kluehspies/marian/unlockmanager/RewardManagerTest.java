@@ -64,6 +64,19 @@ public class RewardManagerTest extends ApplicationTestCase<Application> implemen
         assertFalse(unlockManager.isRegistered(unlockTrigger));
     }
 
+    /**
+     * tests if trigger gets unregistered
+     */
+    public void testUnregisterTrigger(){
+        boolean registered = unlockManager.isRegistered(unlockTrigger);
+        if (registered) {
+            unlockManager.unregisterTrigger(unlockTrigger);
+            assertFalse(unlockManager.isRegistered(unlockTrigger));
+        }else{
+            fail("Trigger was not registered in first place!");
+        }
+    }
+
     @Override
     public void rewardNotAvailable(int resourceID, ITrigger trigger) {
         available = false;
