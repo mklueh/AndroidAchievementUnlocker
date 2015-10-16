@@ -7,7 +7,7 @@ import com.kluehspies.marian.unlockmanager.trigger.Trigger;
 /**
  * Created by Marian on 14.10.2015.
  */
-public abstract class PersistenceHandler<H> extends Trigger implements RewardListener<H> {
+public abstract class PersistenceHandler<M> extends Trigger implements RewardListener<M> {
 
     protected IRewardManager mRewardManager;
 

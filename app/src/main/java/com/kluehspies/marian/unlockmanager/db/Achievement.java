@@ -27,4 +27,7 @@ public class Achievement {
         return action;
     }
 
+    public String getState() {
+        return state;
+    }
 }

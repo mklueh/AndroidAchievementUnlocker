@@ -7,7 +7,7 @@ import com.kluehspies.marian.unlockmanager.trigger.Trigger;
  *
  * @author Marian
  */
-public interface RewardListener<H> {
+public interface RewardListener<M> {
 
     /**
      * Could be used for Incentive Ads
@@ -15,7 +15,7 @@ public interface RewardListener<H> {
      * @param resourceID
      * @param trigger
      */
-    void rewardNotAvailable(H resourceID, Trigger trigger);
+    void rewardNotAvailable(M resourceID, Trigger trigger);
 
     /**
      * Could be used for Incentive Ads
@@ -23,10 +23,10 @@ public interface RewardListener<H> {
      * @param resourceID
      * @param trigger
      */
-    void rewardAvailable(H resourceID, Trigger trigger);
+    void rewardAvailable(M resourceID, Trigger trigger);
 
-    void unlockSucceeded(H resourceID, Trigger trigger);
+    void unlockSucceeded(M resourceID, Trigger trigger);
 
-    void unlockFailed(H resourceID, Trigger trigger);
+    void unlockFailed(M resourceID, Trigger trigger);
 
 }
