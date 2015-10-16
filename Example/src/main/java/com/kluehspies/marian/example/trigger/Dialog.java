@@ -9,11 +9,17 @@ import com.kluehspies.marian.unlockmanager.trigger.Trigger;
 /**
  * Created by Marian on 14.10.2015.
  */
-public class Dialog extends Trigger {
+public class Dialog {
 
-    private final AlertDialog dialog;
+    private final Context context;
+    private final Trigger trigger;
 
-    public Dialog(Context context) {
+    public Dialog(Context context,Trigger trigger) {
+        this.context = context;
+        this.trigger = trigger;
+    }
+
+    public Dialog show() {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("Dialog");
         builder.setMessage("Press unlock");
@@ -21,7 +27,7 @@ public class Dialog extends Trigger {
                 "Unlock", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        unlockSucceeded();
+                        trigger.unlockSucceeded();
                         if (dialog != null)
                             dialog.dismiss();
                     }
@@ -30,15 +36,12 @@ public class Dialog extends Trigger {
                 "Don´t Unlock", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        unlockFailed();
+                        trigger.unlockFailed();
                         if (dialog != null)
                             dialog.dismiss();
                     }
                 });
-        dialog = builder.create();
-    }
-
-    public Dialog show() {
+        AlertDialog dialog = builder.create();
         dialog.show();
         return this;
     }

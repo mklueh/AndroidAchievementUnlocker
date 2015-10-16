@@ -1,18 +1,18 @@
 package com.kluehspies.marian.unlockmanager.manager;
 
-import com.kluehspies.marian.unlockmanager.trigger.ITrigger;
+import com.kluehspies.marian.unlockmanager.trigger.Trigger;
 
 /**
  * Created by Marian on 28.02.2015.
  */
 public interface IRewardManager {
 
-    void unlockNotAvailable(ITrigger trigger);
+    void unlockNotAvailable(Trigger trigger);
 
-    void unlockAvailable(ITrigger trigger);
+    void unlockAvailable(Trigger trigger);
 
-    void unlockSucceeded(ITrigger trigger);
+    void unlockSucceeded(Trigger trigger);
 
-    void unlockFailed(ITrigger trigger);
+    void unlockFailed(Trigger trigger);
 
 }

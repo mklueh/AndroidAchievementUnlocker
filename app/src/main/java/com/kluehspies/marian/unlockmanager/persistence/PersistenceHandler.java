@@ -1,28 +1,18 @@
 package com.kluehspies.marian.unlockmanager.persistence;
 
 import com.kluehspies.marian.unlockmanager.listener.RewardListener;
-import com.kluehspies.marian.unlockmanager.trigger.ITrigger;
+import com.kluehspies.marian.unlockmanager.manager.IRewardManager;
+import com.kluehspies.marian.unlockmanager.trigger.Trigger;
 
 /**
  * Created by Marian on 14.10.2015.
  */
-public class PersistenceHandler implements RewardListener {
-    @Override
-    public void rewardNotAvailable(int resourceID, ITrigger trigger) {
+public abstract class PersistenceHandler<H> extends Trigger implements RewardListener<H> {
 
-    }
-    @Override
-    public void rewardAvailable(int resourceID, ITrigger trigger) {
+    protected IRewardManager mRewardManager;
 
-    }
-
-    @Override
-    public void unlockSucceeded(int resourceID, ITrigger trigger) {
-
-    }
-
-    @Override
-    public void unlockFailed(int resourceID, ITrigger trigger) {
-
+    public PersistenceHandler(IRewardManager rewardManager) {
+        super(rewardManager);
+        this.mRewardManager = rewardManager;
     }
 }

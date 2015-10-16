@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import com.kluehspies.marian.unlockmanager.manager.IRewardManager;
-import com.kluehspies.marian.unlockmanager.trigger.ITrigger;
+import com.kluehspies.marian.unlockmanager.trigger.Trigger;
 
 /**
  * Created by Marian on 21.01.2015.
@@ -12,29 +12,38 @@ import com.kluehspies.marian.unlockmanager.trigger.ITrigger;
  * Default implementation of PersistenceHandler
  */
 
-public class SharedPreferencesHandler extends PersistenceHandler implements ITrigger {
+public class SharedPreferencesHandler<M> extends PersistenceHandler<M> {
 
-    private Context context;
-    private IRewardManager unlockManager;
     private String sharedPreferencesKey;
     private SharedPreferences preferences;
 
-    public SharedPreferencesHandler(Context context) {
-        this.context = context;
+    public SharedPreferencesHandler(Context context, String sharedPreferencesKey,IRewardManager rewardManager) {
+        super(rewardManager);
         this.preferences = PreferenceManager.getDefaultSharedPreferences(context);
-    }
-
-    public SharedPreferencesHandler(Context context, String sharedPreferencesKey) {
-        this(context);
         this.sharedPreferencesKey = sharedPreferencesKey;
     }
 
-    public void unlockSucceeded(int resourceID, ITrigger trigger) {
+    @Override
+    public void rewardNotAvailable(M resourceID, Trigger trigger) {
+
+    }
+
+    @Override
+    public void rewardAvailable(M resourceID, Trigger trigger) {
+
+    }
+
+    @Override
+    public void unlockFailed(M resourceID, Trigger trigger) {
+
+    }
+
+    public void unlockSucceeded(M resourceID, Trigger trigger) {
         setUnlockState(resourceID, true);
     }
 
 
-    private void setUnlockState(int resourceID, boolean state) {
+    private void setUnlockState(M resourceID, boolean state) {
         preferences.edit().putBoolean(sharedPreferencesKey + "_" + resourceID, state).apply();
     }
 
@@ -43,10 +52,11 @@ public class SharedPreferencesHandler extends PersistenceHandler implements ITri
      *
      * @param resourceID
      */
-    public void triggerUnlockIfAvailable(int resourceID) {
+    public void triggerUnlockIfAvailable(M resourceID) {
         if (isUnlocked(resourceID))
-            unlockManager.unlockFailed(this);
-        else unlockManager.unlockSucceeded(this);
+            mRewardManager.unlockFailed(this);
+        else
+            mRewardManager.unlockSucceeded(this);
     }
 
     /**
@@ -55,12 +65,8 @@ public class SharedPreferencesHandler extends PersistenceHandler implements ITri
      * @param resourceID
      * @return
      */
-    public boolean isUnlocked(int resourceID) {
-        return preferences.getBoolean(sharedPreferencesKey + "_" + resourceID, false);
+    public boolean isUnlocked(M resourceID) {
+        return preferences.getBoolean(sharedPreferencesKey + "_" + resourceID.toString(), false);
     }
 
-    @Override
-    public void setUnlockManager(IRewardManager unlockManager) {
-        this.unlockManager = unlockManager;
-    }
 }

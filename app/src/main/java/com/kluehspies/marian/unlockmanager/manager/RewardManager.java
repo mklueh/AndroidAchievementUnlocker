@@ -1,7 +1,7 @@
 package com.kluehspies.marian.unlockmanager.manager;
 
 import com.kluehspies.marian.unlockmanager.listener.RewardListener;
-import com.kluehspies.marian.unlockmanager.trigger.ITrigger;
+import com.kluehspies.marian.unlockmanager.trigger.Trigger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,12 +11,12 @@ import java.util.concurrent.ConcurrentMap;
 /**
  * Created by Marian on 19.01.2015.
  */
-public final class RewardManager implements IRewardManager {
+public final class RewardManager<M> implements IRewardManager {
 
 
-    private ConcurrentMap<Integer, List<RewardListener>> resourceListenerBindingMap = new ConcurrentHashMap<>();
-    private ConcurrentMap<ITrigger, List<Integer>> triggerResourceBindingMap = new ConcurrentHashMap<>();
-    private List<ITrigger> triggers = new ArrayList<>(5);
+    private ConcurrentMap<M, List<RewardListener<M>>> resourceListenerBindingMap = new ConcurrentHashMap<>();
+    private ConcurrentMap<Trigger, List<M>> triggerResourceBindingMap = new ConcurrentHashMap<>();
+    private List<Trigger> triggers = new ArrayList<>(5);
 
     /**
      * Bind RewardListener to resource
@@ -24,9 +24,9 @@ public final class RewardManager implements IRewardManager {
      * @param rewardListener
      * @param resourceID
      */
-    public void bindListener(RewardListener rewardListener, int resourceID) {
+    public void bindListener(RewardListener rewardListener, M resourceID) {
         if (!resourceListenerBindingMap.containsKey(resourceID))
-            resourceListenerBindingMap.put(resourceID, new ArrayList<RewardListener>());
+            resourceListenerBindingMap.put(resourceID, new ArrayList<RewardListener<M>>());
         resourceListenerBindingMap.get(resourceID).add(rewardListener);
     }
 
@@ -36,8 +36,8 @@ public final class RewardManager implements IRewardManager {
      * @param rewardListener
      * @param resourceIDs
      */
-    public void bindListener(RewardListener rewardListener, int... resourceIDs) {
-        for (int resourceID : resourceIDs) bindListener(rewardListener, resourceID);
+    public void bindListener(RewardListener rewardListener, M... resourceIDs) {
+        for (M resourceID : resourceIDs) bindListener(rewardListener, resourceID);
     }
 
     /**
@@ -46,11 +46,11 @@ public final class RewardManager implements IRewardManager {
      * @param trigger
      * @param resourceID
      */
-    public void bindTrigger(ITrigger trigger, int resourceID) {
+    public void bindTrigger(Trigger trigger, M resourceID) {
         if (!isRegistered(trigger))
             registerTrigger(trigger);
         if (!triggerResourceBindingMap.containsKey(trigger))
-            triggerResourceBindingMap.put(trigger, new ArrayList<Integer>());
+            triggerResourceBindingMap.put(trigger, new ArrayList<M>());
         triggerResourceBindingMap.get(trigger).add(resourceID);
     }
 
@@ -61,8 +61,9 @@ public final class RewardManager implements IRewardManager {
      * @param trigger
      * @param resourceIDs
      */
-    public void bindTrigger(ITrigger trigger, int... resourceIDs) {
-        for (int resourceID : resourceIDs) bindTrigger(trigger, resourceID);
+    public void bindTrigger(Trigger trigger, M... resourceIDs) {
+        for (M resourceID : resourceIDs)
+            bindTrigger(trigger, resourceID);
     }
 
     /**
@@ -70,8 +71,7 @@ public final class RewardManager implements IRewardManager {
      *
      * @param trigger
      */
-    private void registerTrigger(ITrigger trigger) {
-        trigger.setUnlockManager(this);
+    private void registerTrigger(Trigger trigger) {
         triggers.add(trigger);
     }
 
@@ -79,9 +79,8 @@ public final class RewardManager implements IRewardManager {
      * unregisters a trigger
      * @param trigger
      */
-    public void unregisterTrigger(ITrigger trigger) {
+    public void unregisterTrigger(Trigger trigger) {
         if (triggers.contains(trigger)) {
-            trigger.setUnlockManager(null);
             triggers.remove(trigger);
         }
     }
@@ -92,31 +91,30 @@ public final class RewardManager implements IRewardManager {
      * @param trigger
      * @return
      */
-    public boolean isRegistered(ITrigger trigger) {
-        for (ITrigger unlockTrigger : triggers)
+    public boolean isRegistered(Trigger trigger) {
+        for (Trigger unlockTrigger : triggers)
             if (unlockTrigger != null && unlockTrigger.equals(trigger))
                 return true;
         return false;
     }
 
-
     @Override
-    public void unlockNotAvailable(ITrigger trigger) {
+    public void unlockNotAvailable(Trigger trigger) {
         notifyListeners(trigger, Type.NOT_AVAILABLE);
     }
 
     @Override
-    public void unlockAvailable(ITrigger trigger) {
+    public void unlockAvailable(Trigger trigger) {
         notifyListeners(trigger, Type.AVAILABLE);
     }
 
     @Override
-    public void unlockSucceeded(ITrigger trigger) {
+    public void unlockSucceeded(Trigger trigger) {
         notifyListeners(trigger, Type.SUCCEEDED);
     }
 
     @Override
-    public void unlockFailed(ITrigger trigger) {
+    public void unlockFailed(Trigger trigger) {
         notifyListeners(trigger, Type.FAILED);
     }
 
@@ -127,12 +125,12 @@ public final class RewardManager implements IRewardManager {
      * @param trigger
      * @param type
      */
-    private void notifyListeners(ITrigger trigger, Type type) {
-        List<Integer> resourceIDs = triggerResourceBindingMap.get(trigger);
-        for (Integer resourceID : resourceIDs) {
-            List<RewardListener> rewardListeners = resourceListenerBindingMap.get(resourceID);
+    private void notifyListeners(Trigger trigger, Type type) {
+        List<M> resourceIDs = triggerResourceBindingMap.get(trigger);
+        for (M resourceID : resourceIDs) {
+            List<RewardListener<M>> rewardListeners = resourceListenerBindingMap.get(resourceID);
             if (rewardListeners != null)
-                for (RewardListener listener : rewardListeners)
+                for (RewardListener<M> listener : rewardListeners)
                     if (listener != null)
                         switch (type) {
                             case SUCCEEDED:

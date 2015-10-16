@@ -6,24 +6,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kluehspies.marian.unlockmanager.manager.IRewardManager;
-import com.kluehspies.marian.unlockmanager.trigger.ITrigger;
+import com.kluehspies.marian.unlockmanager.trigger.Trigger;
 
 /**
  * Created by Marian on 14.10.2015.
  */
-public class RewardView extends TextView implements ITrigger, View.OnClickListener, View.OnLongClickListener {
+public class RewardView extends TextView implements View.OnClickListener, View.OnLongClickListener {
 
-    private IRewardManager manager;
+    private final Trigger trigger;
 
-    public RewardView(Context context) {
+    public RewardView(Context context,Trigger trigger) {
         super(context);
+        this.trigger = trigger;
         setOnClickListener(this);
         setText("Long-Press to unlock");
-    }
-
-    @Override
-    public void setUnlockManager(IRewardManager unlockManager) {
-        this.manager = unlockManager;
     }
 
     @Override
@@ -33,7 +29,7 @@ public class RewardView extends TextView implements ITrigger, View.OnClickListen
 
     @Override
     public boolean onLongClick(View v) {
-        manager.unlockSucceeded(this);
+        trigger.unlockSucceeded();
         return false;
     }
 

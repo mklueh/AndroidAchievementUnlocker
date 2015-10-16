@@ -1,32 +1,33 @@
 package com.kluehspies.marian.unlockmanager.trigger;
 
 import com.kluehspies.marian.unlockmanager.manager.IRewardManager;
+import com.kluehspies.marian.unlockmanager.manager.RewardManager;
 
 /**
  * Created by Marian on 01.06.2015.
  */
-public class Trigger implements ITrigger {
+public class Trigger {
 
-    protected IRewardManager unlockManager;
-
-    @Override
-    public void setUnlockManager(IRewardManager unlockManager) {
-        this.unlockManager = unlockManager;
+    public Trigger(IRewardManager rewardManager){
+        this.mRewardManager = rewardManager;
     }
 
+    protected IRewardManager mRewardManager;
+
     public void unlockNotAvailable() {
-        unlockManager.unlockNotAvailable(this);
+        mRewardManager.unlockNotAvailable(this);
     }
 
     public void unlockAvailable() {
-        unlockManager.unlockAvailable(this);
+        mRewardManager.unlockAvailable(this);
     }
 
     public void unlockSucceeded() {
-        unlockManager.unlockSucceeded(this);
+        mRewardManager.unlockSucceeded(this);
     }
 
     public void unlockFailed() {
-        unlockManager.unlockFailed(this);
+        mRewardManager.unlockFailed(this);
     }
+
 }

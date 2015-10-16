@@ -4,20 +4,20 @@ import android.app.Application;
 import android.test.ApplicationTestCase;
 
 import com.kluehspies.marian.unlockmanager.listener.RewardListener;
+import com.kluehspies.marian.unlockmanager.manager.IRewardManager;
 import com.kluehspies.marian.unlockmanager.manager.RewardManager;
-import com.kluehspies.marian.unlockmanager.trigger.ITrigger;
 import com.kluehspies.marian.unlockmanager.trigger.Trigger;
 
 /**
  * Created by Marian on 30.05.2015.
  */
-public class RewardManagerTest extends ApplicationTestCase<Application> implements RewardListener {
+public class RewardManagerTest extends ApplicationTestCase<Application> implements RewardListener<Integer> {
 
     private boolean available = false;
     private boolean unlocked = false;
 
     private int resourceID = 0;
-    private RewardManager unlockManager;
+    private RewardManager<Integer> rewardManager;
     private Trigger unlockTrigger;
 
     public RewardManagerTest() {
@@ -25,7 +25,9 @@ public class RewardManagerTest extends ApplicationTestCase<Application> implemen
     }
 
     class SampleTrigger extends Trigger {
-
+        public SampleTrigger(IRewardManager rewardManager) {
+            super(rewardManager);
+        }
     }
 
     @Override
@@ -33,10 +35,10 @@ public class RewardManagerTest extends ApplicationTestCase<Application> implemen
         super.setUp();
         available = false;
         unlocked = false;
-        unlockManager = new RewardManager();
-        unlockTrigger = new SampleTrigger();
-        unlockManager.bindListener(this, resourceID);
-        unlockManager.bindTrigger(unlockTrigger = new Trigger(), resourceID);
+        rewardManager = new RewardManager<>();
+        unlockTrigger = new SampleTrigger(rewardManager);
+        rewardManager.bindListener(this, resourceID);
+        rewardManager.bindTrigger(unlockTrigger = new Trigger(rewardManager), resourceID);
     }
 
     public void testUnlockSuccess() throws Exception {
@@ -63,32 +65,32 @@ public class RewardManagerTest extends ApplicationTestCase<Application> implemen
      * tests if trigger gets unregistered
      */
     public void testUnregisterTrigger(){
-        boolean registered = unlockManager.isRegistered(unlockTrigger);
+        boolean registered = rewardManager.isRegistered(unlockTrigger);
         if (registered) {
-            unlockManager.unregisterTrigger(unlockTrigger);
-            assertFalse(unlockManager.isRegistered(unlockTrigger));
+            rewardManager.unregisterTrigger(unlockTrigger);
+            assertFalse(rewardManager.isRegistered(unlockTrigger));
         }else{
             fail("Trigger was not registered in first place!");
         }
     }
 
     @Override
-    public void rewardNotAvailable(int resourceID, ITrigger trigger) {
+    public void rewardNotAvailable(Integer resourceID, Trigger trigger) {
         available = false;
     }
 
     @Override
-    public void rewardAvailable(int resourceID, ITrigger trigger) {
+    public void rewardAvailable(Integer resourceID, Trigger trigger) {
         available = true;
     }
 
     @Override
-    public void unlockSucceeded(int resourceID, ITrigger trigger) {
+    public void unlockSucceeded(Integer resourceID, Trigger trigger) {
         unlocked = true;
     }
 
     @Override
-    public void unlockFailed(int resourceID, ITrigger trigger) {
+    public void unlockFailed(Integer resourceID, Trigger trigger) {
         unlocked = false;
     }
 }
