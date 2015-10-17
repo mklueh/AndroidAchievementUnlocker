@@ -4,6 +4,9 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.kluehspies.marian.unlockmanager.manager.IRewardManager;
+import com.kluehspies.marian.unlockmanager.trigger.Trigger;
+
 import java.util.ArrayList;
 import java.util.List;
 

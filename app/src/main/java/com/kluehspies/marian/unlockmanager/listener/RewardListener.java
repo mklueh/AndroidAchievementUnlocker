@@ -15,7 +15,7 @@ public interface RewardListener<M> {
      * @param resourceID
      * @param trigger
      */
-    void rewardNotAvailable(M resourceID, Trigger trigger);
+    void rewardNotAvailable(M resourceID, Trigger<M> trigger);
 
     /**
      * Could be used for Incentive Ads
@@ -23,10 +23,10 @@ public interface RewardListener<M> {
      * @param resourceID
      * @param trigger
      */
-    void rewardAvailable(M resourceID, Trigger trigger);
+    void rewardAvailable(M resourceID, Trigger<M> trigger);
 
-    void unlockSucceeded(M resourceID, Trigger trigger);
+    void unlockSucceeded(M resourceID, Trigger<M> trigger);
 
-    void unlockFailed(M resourceID, Trigger trigger);
+    void unlockFailed(M resourceID, Trigger<M> trigger);
 
 }

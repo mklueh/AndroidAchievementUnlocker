@@ -3,20 +3,28 @@ package com.kluehspies.marian.unlockmanager.manager;
 import com.kluehspies.marian.unlockmanager.listener.RewardListener;
 import com.kluehspies.marian.unlockmanager.trigger.Trigger;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
  * Created by Marian on 19.01.2015.
  */
-public final class RewardManager<M> implements IRewardManager {
+public final class RewardManager<M> implements IRewardManager<M> {
 
-
+    private ConcurrentMap<Trigger<M>, List<M>> triggerResourceBindingMap = new ConcurrentHashMap<>();
     private ConcurrentMap<M, List<RewardListener<M>>> resourceListenerBindingMap = new ConcurrentHashMap<>();
-    private ConcurrentMap<Trigger, List<M>> triggerResourceBindingMap = new ConcurrentHashMap<>();
-    private List<Trigger> triggers = new ArrayList<>(5);
+
+
+    private Class clazz;
+    public RewardManager(Class clazz){
+        this.clazz = clazz;
+    }
 
     /**
      * Bind RewardListener to resource
@@ -24,7 +32,7 @@ public final class RewardManager<M> implements IRewardManager {
      * @param rewardListener
      * @param resourceID
      */
-    public void bindListener(RewardListener rewardListener, M resourceID) {
+    public void bindListener(RewardListener<M> rewardListener, M resourceID) {
         if (!resourceListenerBindingMap.containsKey(resourceID))
             resourceListenerBindingMap.put(resourceID, new ArrayList<RewardListener<M>>());
         resourceListenerBindingMap.get(resourceID).add(rewardListener);
@@ -36,8 +44,26 @@ public final class RewardManager<M> implements IRewardManager {
      * @param rewardListener
      * @param resourceIDs
      */
-    public void bindListener(RewardListener rewardListener, M... resourceIDs) {
+    public void bindListener(RewardListener<M> rewardListener, M... resourceIDs) {
         for (M resourceID : resourceIDs) bindListener(rewardListener, resourceID);
+    }
+
+    @Override
+    public void unbindTriggers() {
+        for (Map.Entry<Trigger<M>,List<M>> triggerEntry : triggerResourceBindingMap.entrySet()){
+            if (triggerEntry.getValue() != null)
+                triggerEntry.getValue().clear();
+        }
+        triggerResourceBindingMap.clear();
+    }
+
+    @Override
+    public void unbindListeners() {
+        for (Map.Entry<M,List<RewardListener<M>>> triggerEntry : resourceListenerBindingMap.entrySet()){
+            if (triggerEntry.getValue() != null)
+                triggerEntry.getValue().clear();
+        }
+        resourceListenerBindingMap.clear();
     }
 
     /**
@@ -46,9 +72,7 @@ public final class RewardManager<M> implements IRewardManager {
      * @param trigger
      * @param resourceID
      */
-    public void bindTrigger(Trigger trigger, M resourceID) {
-        if (!isRegistered(trigger))
-            registerTrigger(trigger);
+    public void bindTrigger(Trigger<M> trigger, M resourceID) {
         if (!triggerResourceBindingMap.containsKey(trigger))
             triggerResourceBindingMap.put(trigger, new ArrayList<M>());
         triggerResourceBindingMap.get(trigger).add(resourceID);
@@ -61,61 +85,34 @@ public final class RewardManager<M> implements IRewardManager {
      * @param trigger
      * @param resourceIDs
      */
-    public void bindTrigger(Trigger trigger, M... resourceIDs) {
+    public void bindTrigger(Trigger<M> trigger, M... resourceIDs) {
         for (M resourceID : resourceIDs)
             bindTrigger(trigger, resourceID);
     }
 
-    /**
-     * Injects RewardManager instance into trigger
-     *
-     * @param trigger
-     */
-    private void registerTrigger(Trigger trigger) {
-        triggers.add(trigger);
-    }
-
-    /**
-     * unregisters a trigger
-     * @param trigger
-     */
-    public void unregisterTrigger(Trigger trigger) {
-        if (triggers.contains(trigger)) {
-            triggers.remove(trigger);
-        }
-    }
-
-    /**
-     * Check if trigger is already registered
-     *
-     * @param trigger
-     * @return
-     */
-    public boolean isRegistered(Trigger trigger) {
-        for (Trigger unlockTrigger : triggers)
-            if (unlockTrigger != null && unlockTrigger.equals(trigger))
-                return true;
-        return false;
-    }
-
     @Override
-    public void unlockNotAvailable(Trigger trigger) {
+    public void unlockNotAvailable(Trigger<M> trigger) {
         notifyListeners(trigger, Type.NOT_AVAILABLE);
     }
 
     @Override
-    public void unlockAvailable(Trigger trigger) {
+    public void unlockAvailable(Trigger<M> trigger) {
         notifyListeners(trigger, Type.AVAILABLE);
     }
 
     @Override
-    public void unlockSucceeded(Trigger trigger) {
+    public void unlockSucceeded(Trigger<M> trigger) {
         notifyListeners(trigger, Type.SUCCEEDED);
     }
 
     @Override
-    public void unlockFailed(Trigger trigger) {
+    public void unlockFailed(Trigger<M> trigger) {
         notifyListeners(trigger, Type.FAILED);
+    }
+
+    @Override
+    public Class forClass() {
+        return this.clazz;
     }
 
     /**
@@ -125,7 +122,7 @@ public final class RewardManager<M> implements IRewardManager {
      * @param trigger
      * @param type
      */
-    private void notifyListeners(Trigger trigger, Type type) {
+    private void notifyListeners(Trigger<M> trigger, Type type) {
         List<M> resourceIDs = triggerResourceBindingMap.get(trigger);
         for (M resourceID : resourceIDs) {
             List<RewardListener<M>> rewardListeners = resourceListenerBindingMap.get(resourceID);

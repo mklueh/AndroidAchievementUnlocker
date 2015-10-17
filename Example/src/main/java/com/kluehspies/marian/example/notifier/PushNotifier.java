@@ -10,7 +10,7 @@ import com.kluehspies.marian.unlockmanager.trigger.Trigger;
 /**
  * Created by Marian on 14.10.2015.
  */
-public class PushNotifier implements RewardListener<Integer> {
+public class PushNotifier<M> implements RewardListener<M> {
 
     private final Context context;
 
@@ -19,22 +19,22 @@ public class PushNotifier implements RewardListener<Integer> {
     }
 
     @Override
-    public void rewardNotAvailable(Integer resourceID, Trigger trigger) {
+    public void rewardNotAvailable(M resourceID, Trigger<M> trigger) {
         showNotification("Unlock not available " + trigger.getClass().getSimpleName());
     }
 
     @Override
-    public void rewardAvailable(Integer resourceID, Trigger trigger) {
+    public void rewardAvailable(M resourceID, Trigger<M> trigger) {
         showNotification("Unlock available " + trigger.getClass().getSimpleName());
     }
 
     @Override
-    public void unlockSucceeded(Integer resourceID, Trigger trigger) {
+    public void unlockSucceeded(M resourceID, Trigger<M> trigger) {
         showNotification("Unlock succeeded " + trigger.getClass().getSimpleName());
     }
 
     @Override
-    public void unlockFailed(Integer resourceID, Trigger trigger) {
+    public void unlockFailed(M resourceID, Trigger<M> trigger) {
         showNotification("Unlock failed " + trigger.getClass().getSimpleName());
     }
 

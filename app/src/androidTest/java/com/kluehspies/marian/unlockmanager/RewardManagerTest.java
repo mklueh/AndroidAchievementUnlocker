@@ -10,6 +10,7 @@ import com.kluehspies.marian.unlockmanager.db.TestDatabase;
 import com.kluehspies.marian.unlockmanager.listener.RewardListener;
 import com.kluehspies.marian.unlockmanager.manager.IRewardManager;
 import com.kluehspies.marian.unlockmanager.manager.RewardManager;
+import com.kluehspies.marian.unlockmanager.trigger.AndroidAchievementUnlocker;
 import com.kluehspies.marian.unlockmanager.trigger.Trigger;
 
 import java.util.UUID;
@@ -24,16 +25,21 @@ public class RewardManagerTest extends ApplicationTestCase<Application> implemen
 
     private int resourceID = 0;
     private RewardManager<Integer> rewardManager;
-    private Trigger unlockTrigger;
+    private Trigger<Integer> unlockTrigger;
     private TestDatabase testDatabase;
 
     public RewardManagerTest() {
         super(Application.class);
     }
 
-    class SampleTrigger extends Trigger {
-        public SampleTrigger(IRewardManager rewardManager) {
-            super(rewardManager);
+    class SampleTrigger<M> extends Trigger<M> {
+
+        public SampleTrigger(Class clazz) {
+            super(clazz);
+        }
+
+        public SampleTrigger(Class clazz, M... items) {
+            super(clazz, items);
         }
     }
 
@@ -43,10 +49,10 @@ public class RewardManagerTest extends ApplicationTestCase<Application> implemen
         testDatabase = (TestDatabase) TestDatabase.getInstance(getContext());
         available = false;
         unlocked = false;
-        rewardManager = new RewardManager<>();
-        unlockTrigger = new SampleTrigger(rewardManager);
+        rewardManager = new RewardManager<>(Integer.class);
+        unlockTrigger = new SampleTrigger<>(Integer.class);
         rewardManager.bindListener(this, resourceID);
-        rewardManager.bindTrigger(unlockTrigger = new Trigger(rewardManager), resourceID);
+        rewardManager.bindTrigger(unlockTrigger = new Trigger<>(Integer.class), resourceID);
     }
 
     @Override
@@ -119,6 +125,33 @@ public class RewardManagerTest extends ApplicationTestCase<Application> implemen
         String key = UUID.randomUUID().toString();
         String action = UUID.randomUUID().toString();
         return new Achievement(key,action);
+    }
+
+    public void testGeneric(){
+        Achievement item = createFakeAchievement();
+        Trigger<Achievement> trigger = new Trigger<>(Achievement.class);
+        AndroidAchievementUnlocker.bindTrigger(trigger,item);
+        AndroidAchievementUnlocker.bindListener(new RewardListener<Achievement>() {
+            @Override
+            public void rewardNotAvailable(Achievement achievement, Trigger<Achievement> trigger) {
+
+            }
+
+            @Override
+            public void rewardAvailable(Achievement achievement, Trigger<Achievement> trigger) {
+
+            }
+
+            @Override
+            public void unlockSucceeded(Achievement achievement, Trigger<Achievement> trigger) {
+
+            }
+
+            @Override
+            public void unlockFailed(Achievement achievement, Trigger<Achievement> trigger) {
+
+            }
+        },item);
     }
 
     @Override

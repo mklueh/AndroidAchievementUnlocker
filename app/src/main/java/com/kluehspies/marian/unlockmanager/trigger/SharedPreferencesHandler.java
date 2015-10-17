@@ -1,9 +1,11 @@
-package com.kluehspies.marian.unlockmanager.persistence;
+package com.kluehspies.marian.unlockmanager.trigger;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import com.kluehspies.marian.unlockmanager.manager.IRewardManager;
+import com.kluehspies.marian.unlockmanager.persistence.PersistenceHandler;
+import com.kluehspies.marian.unlockmanager.trigger.AndroidAchievementUnlocker;
 import com.kluehspies.marian.unlockmanager.trigger.Trigger;
 
 /**
@@ -17,28 +19,28 @@ public class SharedPreferencesHandler<M> extends PersistenceHandler<M> {
     private String sharedPreferencesKey;
     private SharedPreferences preferences;
 
-    public SharedPreferencesHandler(Context context, String sharedPreferencesKey,IRewardManager rewardManager) {
-        super(rewardManager);
+    public SharedPreferencesHandler(Class clazz,Context context, String sharedPreferencesKey) {
+        super(clazz);
         this.preferences = PreferenceManager.getDefaultSharedPreferences(context);
         this.sharedPreferencesKey = sharedPreferencesKey;
     }
 
     @Override
-    public void rewardNotAvailable(M resourceID, Trigger trigger) {
+    public void rewardNotAvailable(M resourceID, Trigger<M> trigger) {
 
     }
 
     @Override
-    public void rewardAvailable(M resourceID, Trigger trigger) {
+    public void rewardAvailable(M resourceID, Trigger<M> trigger) {
 
     }
 
     @Override
-    public void unlockFailed(M resourceID, Trigger trigger) {
+    public void unlockFailed(M resourceID, Trigger<M> trigger) {
 
     }
 
-    public void unlockSucceeded(M resourceID, Trigger trigger) {
+    public void unlockSucceeded(M resourceID, Trigger<M> trigger) {
         setUnlockState(resourceID, true);
     }
 
@@ -54,9 +56,9 @@ public class SharedPreferencesHandler<M> extends PersistenceHandler<M> {
      */
     public void triggerUnlockIfAvailable(M resourceID) {
         if (isUnlocked(resourceID))
-            mRewardManager.unlockFailed(this);
+            AndroidAchievementUnlocker.unlockFailed(this);
         else
-            mRewardManager.unlockSucceeded(this);
+            AndroidAchievementUnlocker.unlockSucceeded(this);
     }
 
     /**

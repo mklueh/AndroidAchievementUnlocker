@@ -9,7 +9,7 @@ import com.kluehspies.marian.unlockmanager.trigger.Trigger;
 /**
  * Created by Marian on 14.10.2015.
  */
-public class ToastNotifier implements RewardListener<Integer> {
+public class ToastNotifier<M> implements RewardListener<M> {
 
     private Context context;
 
@@ -18,22 +18,22 @@ public class ToastNotifier implements RewardListener<Integer> {
     }
 
     @Override
-    public void rewardNotAvailable(Integer resourceID, Trigger trigger) {
+    public void rewardNotAvailable(M resourceID, Trigger<M> trigger) {
         showToast("Unlock Not Available: " + resourceID + " - " + trigger.getClass().getSimpleName());
     }
 
     @Override
-    public void rewardAvailable(Integer resourceID, Trigger trigger) {
+    public void rewardAvailable(M resourceID, Trigger<M> trigger) {
         showToast("Unlock Available: " + resourceID + " - " + trigger.getClass().getSimpleName());
     }
 
     @Override
-    public void unlockSucceeded(Integer resourceID, Trigger trigger) {
+    public void unlockSucceeded(M resourceID, Trigger<M> trigger) {
         showToast("Unlock Succeeded: " + resourceID + " - " + trigger.getClass().getSimpleName());
     }
 
     @Override
-    public void unlockFailed(Integer resourceID, Trigger trigger) {
+    public void unlockFailed(M resourceID, Trigger<M> trigger) {
         showToast("Unlock Failed: " + resourceID + " - " + trigger.getClass().getSimpleName());
     }
 
