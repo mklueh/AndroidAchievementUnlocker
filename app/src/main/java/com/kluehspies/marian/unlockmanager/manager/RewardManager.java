@@ -1,6 +1,7 @@
 package com.kluehspies.marian.unlockmanager.manager;
 
 import com.kluehspies.marian.unlockmanager.listener.RewardListener;
+import com.kluehspies.marian.unlockmanager.persistence.PersistenceHandler;
 import com.kluehspies.marian.unlockmanager.trigger.Trigger;
 
 import java.lang.reflect.ParameterizedType;
@@ -21,9 +22,9 @@ public final class RewardManager<M> implements IRewardManager<M> {
 
     private ConcurrentMap<Trigger<M>, List<M>> triggerResourceBindingMap = new ConcurrentHashMap<>();
     private ConcurrentMap<M, List<RewardListener<M>>> resourceListenerBindingMap = new ConcurrentHashMap<>();
-
-
     private Class clazz;
+    private PersistenceHandler<M> persistenceHandler;
+
     public RewardManager(Class clazz){
         this.clazz = clazz;
     }
@@ -103,6 +104,19 @@ public final class RewardManager<M> implements IRewardManager<M> {
         }
     }
 
+    @Override
+    public void bindPersistenceHandler(PersistenceHandler<M> persistenceHandler) {
+        this.persistenceHandler = persistenceHandler;
+    }
+
+    @Override
+    public void triggerUnlockIfAvailable(M resourceID) {
+        if (persistenceHandler != null) {
+            Type type = persistenceHandler.isUnlocked(resourceID) ? Type.SUCCEEDED : Type.FAILED;
+            notifyRewardListeners(resourceID,type,persistenceHandler);
+        }
+    }
+
     /**
      * Bind trigger to a resource
      *
@@ -162,24 +176,48 @@ public final class RewardManager<M> implements IRewardManager<M> {
     private void notifyListeners(Trigger<M> trigger, Type type) {
         List<M> resourceIDs = triggerResourceBindingMap.get(trigger);
         for (M resourceID : resourceIDs) {
-            List<RewardListener<M>> rewardListeners = resourceListenerBindingMap.get(resourceID);
-            if (rewardListeners != null)
-                for (RewardListener<M> listener : rewardListeners)
-                    if (listener != null)
-                        switch (type) {
-                            case SUCCEEDED:
-                                listener.unlockSucceeded(resourceID, trigger);
-                                break;
-                            case FAILED:
-                                listener.unlockFailed(resourceID, trigger);
-                                break;
-                            case AVAILABLE:
-                                listener.rewardAvailable(resourceID, trigger);
-                                break;
-                            case NOT_AVAILABLE:
-                                listener.rewardNotAvailable(resourceID, trigger);
-                                break;
-                        }
+            notifyPersistenceHandler(resourceID,type,trigger);
+            notifyRewardListeners(resourceID,type,trigger);
+        }
+    }
+
+    private void notifyRewardListeners(M resourceID,Type type,Trigger<M> trigger) {
+        List<RewardListener<M>> rewardListeners = resourceListenerBindingMap.get(resourceID);
+        if (rewardListeners != null)
+            for (RewardListener<M> listener : rewardListeners)
+                if (listener != null)
+                    switch (type) {
+                        case SUCCEEDED:
+                            listener.unlockSucceeded(resourceID, trigger);
+                            break;
+                        case FAILED:
+                            listener.unlockFailed(resourceID, trigger);
+                            break;
+                        case AVAILABLE:
+                            listener.rewardAvailable(resourceID, trigger);
+                            break;
+                        case NOT_AVAILABLE:
+                            listener.rewardNotAvailable(resourceID, trigger);
+                            break;
+                    }
+    }
+
+    private void notifyPersistenceHandler(M resourceID, Type type, Trigger<M> trigger) {
+        if (persistenceHandler != null){
+            switch (type) {
+                case SUCCEEDED:
+                    persistenceHandler.unlockSucceeded(resourceID, trigger);
+                    break;
+                case FAILED:
+                    persistenceHandler.unlockFailed(resourceID, trigger);
+                    break;
+                case AVAILABLE:
+                    persistenceHandler.rewardAvailable(resourceID, trigger);
+                    break;
+                case NOT_AVAILABLE:
+                    persistenceHandler.rewardNotAvailable(resourceID, trigger);
+                    break;
+            }
         }
     }
 

@@ -1,7 +1,6 @@
 package com.kluehspies.marian.example;
 
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -10,9 +9,13 @@ import com.kluehspies.marian.example.notifier.PushNotifier;
 import com.kluehspies.marian.example.notifier.ToastNotifier;
 import com.kluehspies.marian.example.trigger.Dialog;
 import com.kluehspies.marian.example.trigger.RewardView;
+import com.kluehspies.marian.unlockmanager.db.Achievement;
+import com.kluehspies.marian.unlockmanager.db.AchievementDataSource;
+import com.kluehspies.marian.unlockmanager.db.Database;
 import com.kluehspies.marian.unlockmanager.listener.RewardListener;
-import com.kluehspies.marian.unlockmanager.manager.RewardManager;
+import com.kluehspies.marian.unlockmanager.persistence.PersistenceHandler;
 import com.kluehspies.marian.unlockmanager.trigger.AndroidAchievementUnlocker;
+import com.kluehspies.marian.unlockmanager.trigger.SharedPreferencesHandler;
 import com.kluehspies.marian.unlockmanager.trigger.Trigger;
 
 public class MainActivity extends AppCompatActivity {
@@ -80,6 +83,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        PersistenceHandler<Achievement> persistenceHandler = new SharedPreferencesHandler<>(Integer.class,getApplicationContext(),"integer_key");
+        AndroidAchievementUnlocker.bindPersistenceHandler(persistenceHandler);
+
         SnackbarManager.getInstance().resume();
 
         //The listener will be called, if resources 1, 2, 3 or 4 are touched
@@ -100,6 +106,8 @@ public class MainActivity extends AppCompatActivity {
 
         //Dialog can unlock resource 1
         new Dialog(this,new Trigger<>(Integer.class,1)).show();
+
+        AndroidAchievementUnlocker.triggerUnlockIfAvailable(1);
     }
 
     @Override

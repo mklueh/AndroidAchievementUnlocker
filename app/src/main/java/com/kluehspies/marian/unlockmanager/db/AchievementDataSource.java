@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.kluehspies.marian.unlockmanager.manager.IRewardManager;
+import com.kluehspies.marian.unlockmanager.persistence.PersistenceHandler;
 import com.kluehspies.marian.unlockmanager.trigger.Trigger;
 
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ import java.util.List;
 /**
  * Created by Andy on 15.10.2015.
  */
-public class AchievementDataSource {
+public class AchievementDataSource extends PersistenceHandler<Achievement> {
 
     private final Database database;
     private SQLiteDatabase sqLiteDatabase;
@@ -21,7 +22,8 @@ public class AchievementDataSource {
     public static final String STATE_UNLOCKED = "UNLOCKED";
     public static final String STATE_LOCKED = "LOCKED";
 
-    public AchievementDataSource(Database database){
+    public AchievementDataSource(Class clazz,Database database){
+        super(clazz);
         this.database = database;
     }
 
@@ -124,4 +126,36 @@ public class AchievementDataSource {
         }
     }
 
+    @Override
+    public void rewardNotAvailable(Achievement achievement, Trigger<Achievement> trigger) {
+
+    }
+
+    @Override
+    public void rewardAvailable(Achievement achievement, Trigger<Achievement> trigger) {
+
+    }
+
+    @Override
+    public void unlockSucceeded(Achievement achievement, Trigger<Achievement> trigger) {
+        updateAchievement(achievement,STATE_UNLOCKED);
+    }
+
+    @Override
+    public void unlockFailed(Achievement achievement, Trigger<Achievement> trigger) {
+        updateAchievement(achievement,STATE_LOCKED);
+    }
+
+    @Override
+    public void triggerUnlockIfAvailable(Achievement achievement) {
+        if (isAchievementUnlocked(achievement))
+            unlockSucceeded(achievement,this);
+        else
+            unlockFailed(achievement,this);
+    }
+
+    @Override
+    public boolean isUnlocked(Achievement resourceID) {
+        return (isAchievementUnlocked(resourceID));
+    }
 }

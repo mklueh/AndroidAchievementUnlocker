@@ -37,7 +37,7 @@ public class SharedPreferencesHandler<M> extends PersistenceHandler<M> {
 
     @Override
     public void unlockFailed(M resourceID, Trigger<M> trigger) {
-
+        setUnlockState(resourceID, false);
     }
 
     public void unlockSucceeded(M resourceID, Trigger<M> trigger) {
@@ -54,8 +54,9 @@ public class SharedPreferencesHandler<M> extends PersistenceHandler<M> {
      *
      * @param resourceID
      */
+    @Override
     public void triggerUnlockIfAvailable(M resourceID) {
-        if (isUnlocked(resourceID))
+        if (!isUnlocked(resourceID))
             AndroidAchievementUnlocker.unlockFailed(this);
         else
             AndroidAchievementUnlocker.unlockSucceeded(this);
@@ -67,6 +68,7 @@ public class SharedPreferencesHandler<M> extends PersistenceHandler<M> {
      * @param resourceID
      * @return
      */
+    @Override
     public boolean isUnlocked(M resourceID) {
         return preferences.getBoolean(sharedPreferencesKey + "_" + resourceID.toString(), false);
     }

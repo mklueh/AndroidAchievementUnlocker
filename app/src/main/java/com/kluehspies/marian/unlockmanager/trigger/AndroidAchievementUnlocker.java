@@ -3,6 +3,7 @@ package com.kluehspies.marian.unlockmanager.trigger;
 import com.kluehspies.marian.unlockmanager.listener.RewardListener;
 import com.kluehspies.marian.unlockmanager.manager.IRewardManager;
 import com.kluehspies.marian.unlockmanager.manager.RewardManager;
+import com.kluehspies.marian.unlockmanager.persistence.PersistenceHandler;
 
 import java.lang.ref.WeakReference;
 import java.util.Collections;
@@ -17,6 +18,18 @@ import java.util.concurrent.ConcurrentMap;
 public class AndroidAchievementUnlocker {
 
     private static ConcurrentMap<Class,IRewardManager<?>> rewardManagers = new ConcurrentHashMap<>();
+
+    public static <M> void bindPersistenceHandler(PersistenceHandler<M> persistenceHandler){
+        Class clazz = persistenceHandler.forClass();
+        if (!rewardManagerExists(clazz))
+            addRewardManager(new RewardManager<M>(clazz));
+        IRewardManager<M> rewardManager = getRewardManager(persistenceHandler.forClass());
+        rewardManager.bindPersistenceHandler(persistenceHandler);
+    }
+
+    public static <M> void triggerUnlockIfAvailable(M resourceID) {
+        getRewardManager(resourceID.getClass()).triggerUnlockIfAvailable(resourceID);
+    }
 
     private static void addRewardManager(IRewardManager rewardManager){
         Class clazz = rewardManager.forClass();

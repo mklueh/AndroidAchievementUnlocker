@@ -1,6 +1,7 @@
 package com.kluehspies.marian.unlockmanager.manager;
 
 import com.kluehspies.marian.unlockmanager.listener.RewardListener;
+import com.kluehspies.marian.unlockmanager.persistence.PersistenceHandler;
 import com.kluehspies.marian.unlockmanager.trigger.Trigger;
 
 /**
@@ -23,4 +24,6 @@ public interface IRewardManager<M> {
     void unbindListener(RewardListener<M> rewardListener, M item);
     void unbindListener(RewardListener<M> rewardListener, M... items);
     void unbindListeners(M item);
+    void bindPersistenceHandler(PersistenceHandler<M> persistenceHandler);
+    void triggerUnlockIfAvailable(M resourceID);
 }

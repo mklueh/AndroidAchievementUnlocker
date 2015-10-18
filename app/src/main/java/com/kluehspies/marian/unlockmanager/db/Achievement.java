@@ -30,4 +30,16 @@ public class Achievement {
     public String getState() {
         return state;
     }
+
+    @Override
+    public int hashCode() {
+        return key.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof  Achievement)
+            return key.equals(((Achievement) o).key);
+        return false;
+    }
 }
