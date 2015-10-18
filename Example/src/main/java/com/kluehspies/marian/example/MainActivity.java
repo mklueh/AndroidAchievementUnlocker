@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        PersistenceHandler<Achievement> persistenceHandler = new SharedPreferencesHandler<>(Integer.class,getApplicationContext(),"integer_key");
+        PersistenceHandler<Integer> persistenceHandler = new SharedPreferencesHandler<>(Integer.class,getApplicationContext(),"integer_key");
         AndroidAchievementUnlocker.bindPersistenceHandler(persistenceHandler);
 
         SnackbarManager.getInstance().resume();
