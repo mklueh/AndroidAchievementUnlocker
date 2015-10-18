@@ -19,4 +19,8 @@ public interface IRewardManager<M> {
     void bindListener(RewardListener<M> listener, M... item);
     void unbindTriggers();
     void unbindListeners();
+    void unbindTrigger(Trigger<M> trigger);
+    void unbindListener(RewardListener<M> rewardListener, M item);
+    void unbindListener(RewardListener<M> rewardListener, M... items);
+    void unbindListeners(M item);
 }

@@ -7,8 +7,10 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -64,6 +66,41 @@ public final class RewardManager<M> implements IRewardManager<M> {
                 triggerEntry.getValue().clear();
         }
         resourceListenerBindingMap.clear();
+    }
+
+    @Override
+    public void unbindTrigger(Trigger<M> trigger) {
+        if (triggerResourceBindingMap.containsKey(trigger)){
+            triggerResourceBindingMap.get(trigger).clear();
+            triggerResourceBindingMap.remove(trigger);
+        }
+    }
+
+    @Override
+    public void unbindListener(RewardListener<M> rewardListener, M item) {
+        if (resourceListenerBindingMap.containsKey(item)){
+            List<RewardListener<M>> rewardListeners = resourceListenerBindingMap.get(item);
+            if (rewardListeners.contains(rewardListener))
+                rewardListeners.remove(rewardListener);
+            if (rewardListeners.size() == 0)
+                resourceListenerBindingMap.remove(item);
+        }
+    }
+
+    @Override
+    public void unbindListener(RewardListener<M> rewardListener, M... items) {
+        for (M item : items){
+            unbindListener(rewardListener,item);
+        }
+    }
+
+    @Override
+    public void unbindListeners(M item) {
+        if (resourceListenerBindingMap.containsKey(item)){
+            List<RewardListener<M>> rewardListeners = resourceListenerBindingMap.get(item);
+            rewardListeners.clear();
+            resourceListenerBindingMap.remove(item);
+        }
     }
 
     /**

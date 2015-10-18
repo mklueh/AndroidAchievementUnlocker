@@ -35,15 +35,13 @@ public class SnackbarManager extends Snackbar.Callback implements Runnable {
         TextView tv = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
         tv.setGravity(Gravity.CENTER);
         tv.setTextColor(Color.parseColor("#eeeeee"));
-        snackbar.setCallback(this);
         addSnackbar(snackbar);
     }
 
     private void addSnackbar(Snackbar snackbar) {
         snackbars.addLast(snackbar);
         if (!isSnackbarShowing) {
-            isSnackbarShowing = true;
-            snackbar.show();
+            handler.post(this);
         }
     }
 
@@ -57,14 +55,22 @@ public class SnackbarManager extends Snackbar.Callback implements Runnable {
         if (snackbars.size() > 0)
             snackbars.pop().setCallback(null);
         if (snackbars.size() > 0) {
-            handler.postDelayed(this, 1000);
+            handler.postDelayed(this, 200);
         }else{
             isSnackbarShowing = false;
         }
     }
 
+    public void resume(){
+        isSnackbarShowing = false;
+        handler.post(this);
+    }
+
     @Override
     public void run() {
-        snackbars.pop().show();
+        if (snackbars.size() > 0) {
+            isSnackbarShowing = true;
+            snackbars.getFirst().setCallback(this).show();
+        }
     }
 }

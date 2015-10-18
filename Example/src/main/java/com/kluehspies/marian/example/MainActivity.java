@@ -80,14 +80,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        SnackbarManager.getInstance().resume();
+
         //The listener will be called, if resources 1, 2, 3 or 4 are touched
         AndroidAchievementUnlocker.bindListener(new IntegerRewardListener(findViewById(R.id.parent)), 1, 2, 3, 4);
-        AndroidAchievementUnlocker.bindListener(new StringRewardListener(findViewById(R.id.parent)), "a", "b");
+        AndroidAchievementUnlocker.bindListener(new StringRewardListener(findViewById(R.id.parent)), "a", "b", "c");
 
-        //Dialog can unlock resource 1
-        new Dialog(this,new Trigger<>(Integer.class,1)).show();
-
-        RewardView integerUnlockView = new RewardView(this,new Trigger<>(Integer.class,1,2,3));
+        RewardView integerUnlockView = new RewardView(this,new Trigger<>(Integer.class,1,2,3,4));
         LinearLayout parent = (LinearLayout) findViewById(R.id.parent);
         parent.addView(integerUnlockView);
 
@@ -98,15 +97,15 @@ public class MainActivity extends AppCompatActivity {
         AndroidAchievementUnlocker.bindListener(new ToastNotifier(this), 3);
         AndroidAchievementUnlocker.bindListener(new PushNotifier(this), "b");
         AndroidAchievementUnlocker.bindListener(new ToastNotifier(this), "c");
+
+        //Dialog can unlock resource 1
+        new Dialog(this,new Trigger<>(Integer.class,1)).show();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        AndroidAchievementUnlocker.unbindTriggers(String.class);
-        AndroidAchievementUnlocker.unbindTriggers(Integer.class);
-        AndroidAchievementUnlocker.unbindListeners(String.class);
-        AndroidAchievementUnlocker.unbindListeners(Integer.class);
+        AndroidAchievementUnlocker.unbindAll(Integer.class, String.class);
     }
 
 }
