@@ -21,7 +21,5 @@ Examples:
     3. Unlock C, if user rates the app
 
 
-# Getting started
-
 
 
