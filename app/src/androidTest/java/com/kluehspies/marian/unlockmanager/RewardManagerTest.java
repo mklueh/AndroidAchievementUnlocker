@@ -81,19 +81,6 @@ public class RewardManagerTest extends ApplicationTestCase<Application> implemen
         assertTrue(available);
     }
 
-    /**
-     * tests if trigger gets unregistered
-     */
-    public void testUnregisterTrigger(){
-        boolean registered = rewardManager.isRegistered(unlockTrigger);
-        if (registered) {
-            rewardManager.unregisterTrigger(unlockTrigger);
-            assertFalse(rewardManager.isRegistered(unlockTrigger));
-        }else{
-            fail("Trigger was not registered in first place!");
-        }
-    }
-
     public void testAddAchievement(){
         AchievementDataSource dataSource = new AchievementDataSource(testDatabase);
         Achievement achievement = createFakeAchievement();

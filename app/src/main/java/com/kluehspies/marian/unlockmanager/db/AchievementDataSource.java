@@ -22,8 +22,8 @@ public class AchievementDataSource extends PersistenceHandler<Achievement> {
     public static final String STATE_UNLOCKED = "UNLOCKED";
     public static final String STATE_LOCKED = "LOCKED";
 
-    public AchievementDataSource(Class clazz,Database database){
-        super(clazz);
+    public AchievementDataSource(Database database){
+        super(Achievement.class);
         this.database = database;
     }
 
