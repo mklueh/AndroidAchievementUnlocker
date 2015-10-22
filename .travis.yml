@@ -1,5 +1,4 @@
 language: android
-
 sudo: false
 
 jdk:
@@ -7,11 +6,17 @@ jdk:
 
 android:
   components:
-    - build-tools-23.0.1
-    - android-23
-
-    # Additional Components
-    - extra
+     - platform-tools
+     - tools
+     - build-tools-23.0.0
+     - android-23
+     - extra
+     - extra-google-google_play_services
+     - extra-google-m2repository
+     - extra-android-m2repository
+     - addon-google_apis-google-19
+     - sys-img-armeabi-v7a-android-19
+     - sys-img-x86-android-17
 
 script:
     - echo "Travis branch is $TRAVIS_BRANCH"
