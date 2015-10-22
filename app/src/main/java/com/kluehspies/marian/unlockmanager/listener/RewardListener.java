@@ -1,6 +1,6 @@
 package com.kluehspies.marian.unlockmanager.listener;
 
-import com.kluehspies.marian.unlockmanager.trigger.ITrigger;
+import com.kluehspies.marian.unlockmanager.trigger.Trigger;
 
 /**
  * Callbacks for any unlock
@@ -8,7 +8,7 @@ import com.kluehspies.marian.unlockmanager.trigger.ITrigger;
  *
  * @author Marian
  */
-public interface RewardListener {
+public interface RewardListener<M> {
 
     /**
      * Could be used for Incentive Ads
@@ -16,7 +16,7 @@ public interface RewardListener {
      * @param resourceID
      * @param trigger
      */
-    void rewardNotAvailable(int resourceID, ITrigger trigger);
+    void rewardNotAvailable(M resourceID, Trigger<M> trigger);
 
     /**
      * Could be used for Incentive Ads
@@ -24,10 +24,10 @@ public interface RewardListener {
      * @param resourceID
      * @param trigger
      */
-    void rewardAvailable(int resourceID, ITrigger trigger);
+    void rewardAvailable(M resourceID, Trigger<M> trigger);
 
-    void unlockSucceeded(int resourceID, ITrigger trigger);
+    void unlockSucceeded(M resourceID, Trigger<M> trigger);
 
-    void unlockFailed(int resourceID, ITrigger trigger);
+    void unlockFailed(M resourceID, Trigger<M> trigger);
 
 }

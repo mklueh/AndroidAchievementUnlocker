@@ -1,18 +1,29 @@
 package com.kluehspies.marian.unlockmanager.manager;
 
-import com.kluehspies.marian.unlockmanager.trigger.ITrigger;
+import com.kluehspies.marian.unlockmanager.listener.RewardListener;
+import com.kluehspies.marian.unlockmanager.persistence.PersistenceHandler;
+import com.kluehspies.marian.unlockmanager.trigger.Trigger;
 
 /**
  * Created by Marian on 28.02.2015.
  */
-public interface IRewardManager {
+public interface IRewardManager<M> {
 
-    void unlockNotAvailable(ITrigger trigger);
-
-    void unlockAvailable(ITrigger trigger);
-
-    void unlockSucceeded(ITrigger trigger);
-
-    void unlockFailed(ITrigger trigger);
-
+    Class forClass();
+    void unlockNotAvailable(Trigger<M> trigger);
+    void unlockAvailable(Trigger<M> trigger);
+    void unlockSucceeded(Trigger<M> trigger);
+    void unlockFailed(Trigger<M> trigger);
+    void bindTrigger(Trigger<M> trigger, M item);
+    void bindTrigger(Trigger<M> trigger, M... item);
+    void bindListener(RewardListener<M> listener, M item);
+    void bindListener(RewardListener<M> listener, M... item);
+    void unbindTriggers();
+    void unbindListeners();
+    void unbindTrigger(Trigger<M> trigger);
+    void unbindListener(RewardListener<M> rewardListener, M item);
+    void unbindListener(RewardListener<M> rewardListener, M... items);
+    void unbindListeners(M item);
+    void bindPersistenceHandler(PersistenceHandler<M> persistenceHandler);
+    void triggerUnlockIfAvailable(M resourceID);
 }

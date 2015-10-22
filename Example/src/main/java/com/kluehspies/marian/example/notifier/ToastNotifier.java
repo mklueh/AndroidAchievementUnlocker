@@ -4,12 +4,13 @@ import android.content.Context;
 import android.widget.Toast;
 
 import com.kluehspies.marian.unlockmanager.listener.RewardListener;
-import com.kluehspies.marian.unlockmanager.trigger.ITrigger;
+import com.kluehspies.marian.unlockmanager.trigger.Trigger;
 
 /**
  * Created by Marian on 14.10.2015.
  */
-public class ToastNotifier implements RewardListener {
+public class ToastNotifier<M> implements RewardListener<M> {
+
     private Context context;
 
     public ToastNotifier(Context context) {
@@ -17,22 +18,22 @@ public class ToastNotifier implements RewardListener {
     }
 
     @Override
-    public void rewardNotAvailable(int resourceID, ITrigger trigger) {
+    public void rewardNotAvailable(M resourceID, Trigger<M> trigger) {
         showToast("Unlock Not Available: " + resourceID + " - " + trigger.getClass().getSimpleName());
     }
 
     @Override
-    public void rewardAvailable(int resourceID, ITrigger trigger) {
+    public void rewardAvailable(M resourceID, Trigger<M> trigger) {
         showToast("Unlock Available: " + resourceID + " - " + trigger.getClass().getSimpleName());
     }
 
     @Override
-    public void unlockSucceeded(int resourceID, ITrigger trigger) {
+    public void unlockSucceeded(M resourceID, Trigger<M> trigger) {
         showToast("Unlock Succeeded: " + resourceID + " - " + trigger.getClass().getSimpleName());
     }
 
     @Override
-    public void unlockFailed(int resourceID, ITrigger trigger) {
+    public void unlockFailed(M resourceID, Trigger<M> trigger) {
         showToast("Unlock Failed: " + resourceID + " - " + trigger.getClass().getSimpleName());
     }
 

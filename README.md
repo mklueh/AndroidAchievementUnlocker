@@ -4,8 +4,6 @@ This small library allows you to solve complex unlocking tasks.
 
 Example:
 
-Let´s say
-
 - You have two locked Resources (Images, Features, etc...) A, B and C
 
 - You have three Reward Triggers
@@ -22,8 +20,6 @@ Examples:
     2. Unlock B, if user shares the app
     3. Unlock C, if user rates the app
 
-
-# Getting started
 
 
 

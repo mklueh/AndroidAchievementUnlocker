@@ -1,32 +1,44 @@
 package com.kluehspies.marian.unlockmanager.trigger;
 
 import com.kluehspies.marian.unlockmanager.manager.IRewardManager;
+import com.kluehspies.marian.unlockmanager.manager.RewardManager;
+
+import java.lang.reflect.ParameterizedType;
 
 /**
  * Created by Marian on 01.06.2015.
  */
-public class Trigger implements ITrigger {
+public class Trigger<M> {
 
-    protected IRewardManager unlockManager;
+    private final Class clazz;
 
-    @Override
-    public void setUnlockManager(IRewardManager unlockManager) {
-        this.unlockManager = unlockManager;
+    public Trigger(Class clazz){
+        this.clazz = clazz;
+    }
+
+    public Trigger(Class clazz,M... items){
+        this(clazz);
+        AndroidAchievementUnlocker.bindTrigger(this,items);
+    }
+
+    public Class forClass() {
+        return clazz;
     }
 
     public void unlockNotAvailable() {
-        unlockManager.unlockNotAvailable(this);
+        AndroidAchievementUnlocker.unlockNotAvailable(this);
     }
 
     public void unlockAvailable() {
-        unlockManager.unlockAvailable(this);
+        AndroidAchievementUnlocker.unlockAvailable(this);
     }
 
     public void unlockSucceeded() {
-        unlockManager.unlockSucceeded(this);
+        AndroidAchievementUnlocker.unlockSucceeded(this);
     }
 
     public void unlockFailed() {
-        unlockManager.unlockFailed(this);
+        AndroidAchievementUnlocker.unlockFailed(this);
     }
+
 }
