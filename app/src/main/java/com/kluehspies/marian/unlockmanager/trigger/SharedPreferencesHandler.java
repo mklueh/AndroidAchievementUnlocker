@@ -9,7 +9,7 @@ import com.kluehspies.marian.unlockmanager.trigger.AndroidAchievementUnlocker;
 import com.kluehspies.marian.unlockmanager.trigger.Trigger;
 
 /**
- * Created by Marian on 21.01.2015.
+ * Created by Marian Klühspies on 21.01.2015.
  *
  * Default implementation of PersistenceHandler
  */

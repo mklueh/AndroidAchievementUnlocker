@@ -6,7 +6,7 @@ import com.kluehspies.marian.unlockmanager.trigger.Trigger;
  * Callbacks for any unlock
  *
  *
- * @author Marian
+ * @author Marian Klühspies
  */
 public interface RewardListener<M> {
 

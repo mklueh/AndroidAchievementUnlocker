@@ -5,7 +5,7 @@ import com.kluehspies.marian.unlockmanager.persistence.PersistenceHandler;
 import com.kluehspies.marian.unlockmanager.trigger.Trigger;
 
 /**
- * Created by Marian on 28.02.2015.
+ * Created by Marian Klühspies on 28.02.2015.
  */
 public interface IRewardManager<M> {
 

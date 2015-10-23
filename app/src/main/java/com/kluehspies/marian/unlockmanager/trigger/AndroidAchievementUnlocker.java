@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- * Created by Andy on 17.10.2015.
+ * Created by Andreas Schattney on 17.10.2015.
  */
 public class AndroidAchievementUnlocker {
 

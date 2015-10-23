@@ -1,7 +1,7 @@
 package com.kluehspies.marian.unlockmanager.db;
 
 /**
- * Created by Andy on 16.10.2015.
+ * Created by Andreas Schattney on 16.10.2015.
  */
 public class Achievement {
 

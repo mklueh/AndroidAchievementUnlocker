@@ -1,11 +1,10 @@
 package com.kluehspies.marian.unlockmanager.persistence;
 
 import com.kluehspies.marian.unlockmanager.listener.RewardListener;
-import com.kluehspies.marian.unlockmanager.trigger.AndroidAchievementUnlocker;
 import com.kluehspies.marian.unlockmanager.trigger.Trigger;
 
 /**
- * Created by Marian on 14.10.2015.
+ * Created by Marian Klühspies on 14.10.2015.
  */
 public abstract class PersistenceHandler<M> extends Trigger<M> implements RewardListener<M> {
 
@@ -14,5 +13,6 @@ public abstract class PersistenceHandler<M> extends Trigger<M> implements Reward
     }
 
     public abstract void triggerUnlockIfAvailable(M resourceID);
+
     public abstract boolean isUnlocked(M resourceID);
 }

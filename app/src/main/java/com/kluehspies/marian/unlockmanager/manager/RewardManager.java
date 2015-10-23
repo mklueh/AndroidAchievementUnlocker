@@ -4,19 +4,14 @@ import com.kluehspies.marian.unlockmanager.listener.RewardListener;
 import com.kluehspies.marian.unlockmanager.persistence.PersistenceHandler;
 import com.kluehspies.marian.unlockmanager.trigger.Trigger;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- * Created by Marian on 19.01.2015.
+ * Created by Marian Klühspies on 19.01.2015.
  */
 public final class RewardManager<M> implements IRewardManager<M> {
 
@@ -25,7 +20,7 @@ public final class RewardManager<M> implements IRewardManager<M> {
     private Class clazz;
     private PersistenceHandler<M> persistenceHandler;
 
-    public RewardManager(Class clazz){
+    public RewardManager(Class clazz) {
         this.clazz = clazz;
     }
 
@@ -53,7 +48,7 @@ public final class RewardManager<M> implements IRewardManager<M> {
 
     @Override
     public void unbindTriggers() {
-        for (Map.Entry<Trigger<M>,List<M>> triggerEntry : triggerResourceBindingMap.entrySet()){
+        for (Map.Entry<Trigger<M>, List<M>> triggerEntry : triggerResourceBindingMap.entrySet()) {
             if (triggerEntry.getValue() != null)
                 triggerEntry.getValue().clear();
         }
@@ -62,7 +57,7 @@ public final class RewardManager<M> implements IRewardManager<M> {
 
     @Override
     public void unbindListeners() {
-        for (Map.Entry<M,List<RewardListener<M>>> triggerEntry : resourceListenerBindingMap.entrySet()){
+        for (Map.Entry<M, List<RewardListener<M>>> triggerEntry : resourceListenerBindingMap.entrySet()) {
             if (triggerEntry.getValue() != null)
                 triggerEntry.getValue().clear();
         }
@@ -71,7 +66,7 @@ public final class RewardManager<M> implements IRewardManager<M> {
 
     @Override
     public void unbindTrigger(Trigger<M> trigger) {
-        if (triggerResourceBindingMap.containsKey(trigger)){
+        if (triggerResourceBindingMap.containsKey(trigger)) {
             triggerResourceBindingMap.get(trigger).clear();
             triggerResourceBindingMap.remove(trigger);
         }
@@ -79,7 +74,7 @@ public final class RewardManager<M> implements IRewardManager<M> {
 
     @Override
     public void unbindListener(RewardListener<M> rewardListener, M item) {
-        if (resourceListenerBindingMap.containsKey(item)){
+        if (resourceListenerBindingMap.containsKey(item)) {
             List<RewardListener<M>> rewardListeners = resourceListenerBindingMap.get(item);
             if (rewardListeners.contains(rewardListener))
                 rewardListeners.remove(rewardListener);
@@ -90,14 +85,14 @@ public final class RewardManager<M> implements IRewardManager<M> {
 
     @Override
     public void unbindListener(RewardListener<M> rewardListener, M... items) {
-        for (M item : items){
-            unbindListener(rewardListener,item);
+        for (M item : items) {
+            unbindListener(rewardListener, item);
         }
     }
 
     @Override
     public void unbindListeners(M item) {
-        if (resourceListenerBindingMap.containsKey(item)){
+        if (resourceListenerBindingMap.containsKey(item)) {
             List<RewardListener<M>> rewardListeners = resourceListenerBindingMap.get(item);
             rewardListeners.clear();
             resourceListenerBindingMap.remove(item);
@@ -113,7 +108,7 @@ public final class RewardManager<M> implements IRewardManager<M> {
     public void triggerUnlockIfAvailable(M resourceID) {
         if (persistenceHandler != null) {
             Type type = persistenceHandler.isUnlocked(resourceID) ? Type.SUCCEEDED : Type.FAILED;
-            notifyRewardListeners(resourceID,type,persistenceHandler);
+            notifyRewardListeners(resourceID, type, persistenceHandler);
         }
     }
 
@@ -176,12 +171,12 @@ public final class RewardManager<M> implements IRewardManager<M> {
     private void notifyListeners(Trigger<M> trigger, Type type) {
         List<M> resourceIDs = triggerResourceBindingMap.get(trigger);
         for (M resourceID : resourceIDs) {
-            notifyPersistenceHandler(resourceID,type,trigger);
-            notifyRewardListeners(resourceID,type,trigger);
+            notifyPersistenceHandler(resourceID, type, trigger);
+            notifyRewardListeners(resourceID, type, trigger);
         }
     }
 
-    private void notifyRewardListeners(M resourceID,Type type,Trigger<M> trigger) {
+    private void notifyRewardListeners(M resourceID, Type type, Trigger<M> trigger) {
         List<RewardListener<M>> rewardListeners = resourceListenerBindingMap.get(resourceID);
         if (rewardListeners != null)
             for (RewardListener<M> listener : rewardListeners)
@@ -203,7 +198,7 @@ public final class RewardManager<M> implements IRewardManager<M> {
     }
 
     private void notifyPersistenceHandler(M resourceID, Type type, Trigger<M> trigger) {
-        if (persistenceHandler != null){
+        if (persistenceHandler != null) {
             switch (type) {
                 case SUCCEEDED:
                     persistenceHandler.unlockSucceeded(resourceID, trigger);
