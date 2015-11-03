@@ -10,8 +10,6 @@ import com.kluehspies.marian.unlockmanager.trigger.Trigger;
 public interface IRewardManager<M> {
 
     Class forClass();
-    void unlockNotAvailable(Trigger<M> trigger);
-    void unlockAvailable(Trigger<M> trigger);
     void unlockSucceeded(Trigger<M> trigger);
     void unlockFailed(Trigger<M> trigger);
     void bindTrigger(Trigger<M> trigger, M item);
@@ -25,5 +23,5 @@ public interface IRewardManager<M> {
     void unbindListener(RewardListener<M> rewardListener, M... items);
     void unbindListeners(M item);
     void bindPersistenceHandler(PersistenceHandler<M> persistenceHandler);
-    void triggerUnlockIfAvailable(M resourceID);
+    void triggerUnlockIfAvailable(M item);
 }

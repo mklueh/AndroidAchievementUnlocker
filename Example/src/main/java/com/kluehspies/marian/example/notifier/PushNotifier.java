@@ -19,22 +19,12 @@ public class PushNotifier<M> implements RewardListener<M> {
     }
 
     @Override
-    public void rewardNotAvailable(M resourceID, Trigger<M> trigger) {
-        showNotification("Unlock not available " + trigger.getClass().getSimpleName());
-    }
-
-    @Override
-    public void rewardAvailable(M resourceID, Trigger<M> trigger) {
-        showNotification("Unlock available " + trigger.getClass().getSimpleName());
-    }
-
-    @Override
-    public void unlockSucceeded(M resourceID, Trigger<M> trigger) {
+    public void unlockSucceeded(M item, Trigger<M> trigger) {
         showNotification("Unlock succeeded " + trigger.getClass().getSimpleName());
     }
 
     @Override
-    public void unlockFailed(M resourceID, Trigger<M> trigger) {
+    public void unlockFailed(M item, Trigger<M> trigger) {
         showNotification("Unlock failed " + trigger.getClass().getSimpleName());
     }
 

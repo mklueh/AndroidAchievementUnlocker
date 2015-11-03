@@ -13,27 +13,19 @@ public class Trigger<M> {
 
     public Trigger(Class clazz, M... items) {
         this(clazz);
-        AndroidAchievementUnlocker.bindTrigger(this, items);
+        AndroidAchievementUnlocker.getDefault().bindTrigger(this, items);
     }
 
     public Class forClass() {
         return clazz;
     }
 
-    public void unlockNotAvailable() {
-        AndroidAchievementUnlocker.unlockNotAvailable(this);
-    }
-
-    public void unlockAvailable() {
-        AndroidAchievementUnlocker.unlockAvailable(this);
-    }
-
     public void unlockSucceeded() {
-        AndroidAchievementUnlocker.unlockSucceeded(this);
+        AndroidAchievementUnlocker.getDefault().unlockSucceeded(this);
     }
 
     public void unlockFailed() {
-        AndroidAchievementUnlocker.unlockFailed(this);
+        AndroidAchievementUnlocker.getDefault().unlockFailed(this);
     }
 
 }

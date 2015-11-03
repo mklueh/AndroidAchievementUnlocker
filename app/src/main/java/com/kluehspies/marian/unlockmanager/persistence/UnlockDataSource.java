@@ -1,13 +1,11 @@
-package com.kluehspies.marian.unlockmanager.db;
+package com.kluehspies.marian.unlockmanager.persistence;
 
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.kluehspies.marian.unlockmanager.persistence.PersistenceHandler;
 import com.kluehspies.marian.unlockmanager.trigger.Trigger;
 
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +25,13 @@ public abstract class UnlockDataSource<T extends Achievement> extends Persistenc
         this.database = database;
     }
 
+    protected abstract String getTableName();
+
+    private String internalGetTableName(){
+        String tableName = getTableName();
+        return tableName == null || tableName.trim().equals("") ? UnlockTable.TABLE_NAME : tableName;
+    }
+
     public void openDatabase(){
         sqLiteDatabase = database.getWritableDatabase();
     }
@@ -40,24 +45,40 @@ public abstract class UnlockDataSource<T extends Achievement> extends Persistenc
         cv.put(UnlockTable.COLUMN_KEY,item.getKey());
         cv.put(UnlockTable.COLUMN_ACTION,item.getAction());
         cv.put(UnlockTable.COLUMN_UNLOCK_STATE, (state == null) ? STATE_LOCKED : state);
-        onBindValues(cv,item);
-        return sqLiteDatabase.insert(UnlockTable.TABLE_NAME, null, cv) > 0;
+        onBindValues(cv, item);
+        return sqLiteDatabase.insert(internalGetTableName(), null, cv) > 0;
     }
 
     public boolean update(T item, String state){
         ContentValues cv = new ContentValues();
-        cv.put(UnlockTable.COLUMN_UNLOCK_STATE,state);
-        return sqLiteDatabase.update(
-                UnlockTable.TABLE_NAME,
-                cv,
+        cv.put(UnlockTable.COLUMN_UNLOCK_STATE, state);
+        if (exists(item)) {
+            return sqLiteDatabase.update(
+                    internalGetTableName(),
+                    cv,
+                    String.format("%s = ? AND %s = ?", UnlockTable.COLUMN_KEY, UnlockTable.COLUMN_ACTION),
+                    new String[]{item.getKey(), item.getAction()}
+            ) > 0;
+        }else{
+            return sqLiteDatabase.insert(getTableName(),null,cv) > 0;
+        }
+    }
+
+    private boolean exists(T item) {
+        Cursor cursor = sqLiteDatabase.query(
+                getTableName(),
+                null,
                 String.format("%s = ? AND %s = ?", UnlockTable.COLUMN_KEY, UnlockTable.COLUMN_ACTION),
-                new String[]{item.getKey(), item.getAction()}
-        ) > 0;
+                new String[]{item.getKey(), item.getAction()}, null, null, null
+        );
+        boolean exists = cursor.moveToFirst();
+        cursor.close();
+        return exists;
     }
 
     public boolean remove(T item){
         return sqLiteDatabase.delete(
-                UnlockTable.TABLE_NAME,
+                internalGetTableName(),
                 String.format("%s = ? AND %s = ?", UnlockTable.COLUMN_KEY, UnlockTable.COLUMN_ACTION),
                 new String[]{item.getKey(), item.getAction()}
         ) > 0;
@@ -70,7 +91,7 @@ public abstract class UnlockDataSource<T extends Achievement> extends Persistenc
     private String getStatus(T item){
         String status = null;
         Cursor cursor = sqLiteDatabase.query(
-                UnlockTable.TABLE_NAME,
+                internalGetTableName(),
                 new String[]{UnlockTable.COLUMN_UNLOCK_STATE},
                 String.format("%s = ? AND %s = ?", UnlockTable.COLUMN_KEY, UnlockTable.COLUMN_ACTION),
                 new String[]{item.getKey(), item.getAction()},
@@ -107,7 +128,7 @@ public abstract class UnlockDataSource<T extends Achievement> extends Persistenc
     private List<T> internalGet(String withState){
         List<T> items = new ArrayList<>();
         Cursor cursor = sqLiteDatabase.query(
-                UnlockTable.TABLE_NAME,
+                internalGetTableName(),
                 null,
                 String.format("%s = ?", UnlockTable.COLUMN_UNLOCK_STATE),
                 (withState != null) ? new String[]{withState} : null,
@@ -138,16 +159,6 @@ public abstract class UnlockDataSource<T extends Achievement> extends Persistenc
     }
 
     @Override
-    public void rewardNotAvailable(T item, Trigger<T> trigger) {
-
-    }
-
-    @Override
-    public void rewardAvailable(T item, Trigger<T> trigger) {
-
-    }
-
-    @Override
     public void unlockSucceeded(T achievement, Trigger<T> trigger) {
         update(achievement, STATE_UNLOCKED);
     }
@@ -169,4 +180,5 @@ public abstract class UnlockDataSource<T extends Achievement> extends Persistenc
     public boolean isUnlocked(T item) {
         return getStatus(item).equals(STATE_UNLOCKED);
     }
+
 }

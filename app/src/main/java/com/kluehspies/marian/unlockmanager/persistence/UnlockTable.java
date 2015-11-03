@@ -1,9 +1,9 @@
-package com.kluehspies.marian.unlockmanager.db;
+package com.kluehspies.marian.unlockmanager.persistence;
 
 /**
  * Created by Andreas Schattney on 02.10.2015.
  */
-public class UnlockTable {
+class UnlockTable {
 
     public static final String TABLE_NAME = "resource";
 

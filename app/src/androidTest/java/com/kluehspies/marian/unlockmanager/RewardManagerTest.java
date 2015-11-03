@@ -4,9 +4,9 @@ import android.app.Application;
 import android.support.annotation.NonNull;
 import android.test.ApplicationTestCase;
 
-import com.kluehspies.marian.unlockmanager.db.Achievement;
+import com.kluehspies.marian.unlockmanager.persistence.Achievement;
 import com.kluehspies.marian.unlockmanager.db.TestDatabase;
-import com.kluehspies.marian.unlockmanager.db.UnlockDataSource;
+import com.kluehspies.marian.unlockmanager.persistence.UnlockDataSource;
 import com.kluehspies.marian.unlockmanager.listener.RewardListener;
 import com.kluehspies.marian.unlockmanager.manager.RewardManager;
 import com.kluehspies.marian.unlockmanager.trigger.AndroidAchievementUnlocker;
@@ -19,9 +19,7 @@ import java.util.UUID;
  */
 public class RewardManagerTest extends ApplicationTestCase<Application> implements RewardListener<Integer> {
 
-    private boolean available = false;
     private boolean unlocked = false;
-
     private int resourceID = 0;
     private RewardManager<Integer> rewardManager;
     private Trigger<Integer> unlockTrigger;
@@ -49,11 +47,15 @@ public class RewardManagerTest extends ApplicationTestCase<Application> implemen
         testDatabase = (TestDatabase) TestDatabase.getInstance(getContext());
         dataSource = new UnlockDataSource<Achievement>(Achievement.class,testDatabase) {
             @Override
+            protected String getTableName() {
+                return null;
+            }
+
+            @Override
             protected Achievement getNewInstance() {
                 return new Achievement();
             }
         };
-        available = false;
         unlocked = false;
         rewardManager = new RewardManager<>(Integer.class);
         unlockTrigger = new SampleTrigger<>(Integer.class);
@@ -75,16 +77,6 @@ public class RewardManagerTest extends ApplicationTestCase<Application> implemen
     public void testUnlockFailed() throws Exception {
         unlockTrigger.unlockFailed();
         assertFalse(unlocked);
-    }
-
-    public void testUnlockNotAvailabe() throws Exception {
-        unlockTrigger.unlockNotAvailable();
-        assertFalse(available);
-    }
-
-    public void testUnlockAvailable() throws Exception {
-        unlockTrigger.unlockAvailable();
-        assertTrue(available);
     }
 
     public void testAddAchievement(){
@@ -124,17 +116,8 @@ public class RewardManagerTest extends ApplicationTestCase<Application> implemen
     public void testGeneric(){
         Achievement item = createFakeAchievement();
         Trigger<Achievement> trigger = new Trigger<>(Achievement.class);
-        AndroidAchievementUnlocker.bindTrigger(trigger,item);
-        AndroidAchievementUnlocker.bindListener(new RewardListener<Achievement>() {
-            @Override
-            public void rewardNotAvailable(Achievement achievement, Trigger<Achievement> trigger) {
-
-            }
-
-            @Override
-            public void rewardAvailable(Achievement achievement, Trigger<Achievement> trigger) {
-
-            }
+        AndroidAchievementUnlocker.getDefault().bindTrigger(trigger,item);
+        AndroidAchievementUnlocker.getDefault().bindListener(new RewardListener<Achievement>() {
 
             @Override
             public void unlockSucceeded(Achievement achievement, Trigger<Achievement> trigger) {
@@ -146,16 +129,6 @@ public class RewardManagerTest extends ApplicationTestCase<Application> implemen
 
             }
         },item);
-    }
-
-    @Override
-    public void rewardNotAvailable(Integer resourceID, Trigger trigger) {
-        available = false;
-    }
-
-    @Override
-    public void rewardAvailable(Integer resourceID, Trigger trigger) {
-        available = true;
     }
 
     @Override

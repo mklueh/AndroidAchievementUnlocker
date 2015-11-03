@@ -1,4 +1,4 @@
-package com.kluehspies.marian.unlockmanager.db;
+package com.kluehspies.marian.unlockmanager.persistence;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

@@ -28,22 +28,22 @@ public final class RewardManager<M> implements IRewardManager<M> {
      * Bind RewardListener to resource
      *
      * @param rewardListener
-     * @param resourceID
+     * @paraM item
      */
-    public void bindListener(RewardListener<M> rewardListener, M resourceID) {
-        if (!resourceListenerBindingMap.containsKey(resourceID))
-            resourceListenerBindingMap.put(resourceID, new ArrayList<RewardListener<M>>());
-        resourceListenerBindingMap.get(resourceID).add(rewardListener);
+    public void bindListener(RewardListener<M> rewardListener, M item) {
+        if (!resourceListenerBindingMap.containsKey(item))
+            resourceListenerBindingMap.put(item, new ArrayList<RewardListener<M>>());
+        resourceListenerBindingMap.get(item).add(rewardListener);
     }
 
     /**
      * Bind RewardListener to multiple resources
      *
      * @param rewardListener
-     * @param resourceIDs
+     * @paraM items
      */
     public void bindListener(RewardListener<M> rewardListener, M... resourceIDs) {
-        for (M resourceID : resourceIDs) bindListener(rewardListener, resourceID);
+        for (M item : resourceIDs) bindListener(rewardListener, item);
     }
 
     @Override
@@ -105,10 +105,10 @@ public final class RewardManager<M> implements IRewardManager<M> {
     }
 
     @Override
-    public void triggerUnlockIfAvailable(M resourceID) {
+    public void triggerUnlockIfAvailable(M item) {
         if (persistenceHandler != null) {
-            Type type = persistenceHandler.isUnlocked(resourceID) ? Type.SUCCEEDED : Type.FAILED;
-            notifyRewardListeners(resourceID, type, persistenceHandler);
+            Type type = persistenceHandler.isUnlocked(item) ? Type.SUCCEEDED : Type.FAILED;
+            notifyRewardListeners(item, type, persistenceHandler);
         }
     }
 
@@ -116,12 +116,12 @@ public final class RewardManager<M> implements IRewardManager<M> {
      * Bind trigger to a resource
      *
      * @param trigger
-     * @param resourceID
+     * @paraM item
      */
-    public void bindTrigger(Trigger<M> trigger, M resourceID) {
+    public void bindTrigger(Trigger<M> trigger, M item) {
         if (!triggerResourceBindingMap.containsKey(trigger))
             triggerResourceBindingMap.put(trigger, new ArrayList<M>());
-        triggerResourceBindingMap.get(trigger).add(resourceID);
+        triggerResourceBindingMap.get(trigger).add(item);
     }
 
 
@@ -129,21 +129,11 @@ public final class RewardManager<M> implements IRewardManager<M> {
      * Bind trigger to multiple resources
      *
      * @param trigger
-     * @param resourceIDs
+     * @paraM items
      */
     public void bindTrigger(Trigger<M> trigger, M... resourceIDs) {
-        for (M resourceID : resourceIDs)
-            bindTrigger(trigger, resourceID);
-    }
-
-    @Override
-    public void unlockNotAvailable(Trigger<M> trigger) {
-        notifyListeners(trigger, Type.NOT_AVAILABLE);
-    }
-
-    @Override
-    public void unlockAvailable(Trigger<M> trigger) {
-        notifyListeners(trigger, Type.AVAILABLE);
+        for (M item : resourceIDs)
+            bindTrigger(trigger, item);
     }
 
     @Override
@@ -170,53 +160,41 @@ public final class RewardManager<M> implements IRewardManager<M> {
      */
     private void notifyListeners(Trigger<M> trigger, Type type) {
         List<M> resourceIDs = triggerResourceBindingMap.get(trigger);
-        for (M resourceID : resourceIDs) {
-            notifyPersistenceHandler(resourceID, type, trigger);
-            notifyRewardListeners(resourceID, type, trigger);
+        for (M item : resourceIDs) {
+            notifyPersistenceHandler(item, type, trigger);
+            notifyRewardListeners(item, type, trigger);
         }
     }
 
-    private void notifyRewardListeners(M resourceID, Type type, Trigger<M> trigger) {
-        List<RewardListener<M>> rewardListeners = resourceListenerBindingMap.get(resourceID);
+    private void notifyRewardListeners(M item, Type type, Trigger<M> trigger) {
+        List<RewardListener<M>> rewardListeners = resourceListenerBindingMap.get(item);
         if (rewardListeners != null)
             for (RewardListener<M> listener : rewardListeners)
                 if (listener != null)
                     switch (type) {
                         case SUCCEEDED:
-                            listener.unlockSucceeded(resourceID, trigger);
+                            listener.unlockSucceeded(item, trigger);
                             break;
                         case FAILED:
-                            listener.unlockFailed(resourceID, trigger);
-                            break;
-                        case AVAILABLE:
-                            listener.rewardAvailable(resourceID, trigger);
-                            break;
-                        case NOT_AVAILABLE:
-                            listener.rewardNotAvailable(resourceID, trigger);
+                            listener.unlockFailed(item, trigger);
                             break;
                     }
     }
 
-    private void notifyPersistenceHandler(M resourceID, Type type, Trigger<M> trigger) {
+    private void notifyPersistenceHandler(M item, Type type, Trigger<M> trigger) {
         if (persistenceHandler != null) {
             switch (type) {
                 case SUCCEEDED:
-                    persistenceHandler.unlockSucceeded(resourceID, trigger);
+                    persistenceHandler.unlockSucceeded(item, trigger);
                     break;
                 case FAILED:
-                    persistenceHandler.unlockFailed(resourceID, trigger);
-                    break;
-                case AVAILABLE:
-                    persistenceHandler.rewardAvailable(resourceID, trigger);
-                    break;
-                case NOT_AVAILABLE:
-                    persistenceHandler.rewardNotAvailable(resourceID, trigger);
+                    persistenceHandler.unlockFailed(item, trigger);
                     break;
             }
         }
     }
 
     enum Type {
-        SUCCEEDED, FAILED, AVAILABLE, NOT_AVAILABLE
+        SUCCEEDED, FAILED
     }
 }

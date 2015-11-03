@@ -1,4 +1,4 @@
-package com.kluehspies.marian.unlockmanager.db;
+package com.kluehspies.marian.unlockmanager.persistence;
 
 /**
  * Created by Andreas Schattney on 16.10.2015.
@@ -10,6 +10,18 @@ public class Achievement {
     private String state;
 
     public Achievement(){}
+
+    @Override
+    public int hashCode() {
+        return key.hashCode() + action.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof  Achievement)
+            return key.equals(((Achievement) o).key) && action.equals(((Achievement) o).action);
+        return false;
+    }
 
     public String getKey() {
         return key;
@@ -23,18 +35,6 @@ public class Achievement {
         return state;
     }
 
-    @Override
-    public int hashCode() {
-        return key.hashCode();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o instanceof  Achievement)
-            return key.equals(((Achievement) o).key);
-        return false;
-    }
-
     public void setKey(String key) {
         this.key = key;
     }
@@ -46,4 +46,5 @@ public class Achievement {
     public void setState(String state) {
         this.state = state;
     }
+
 }

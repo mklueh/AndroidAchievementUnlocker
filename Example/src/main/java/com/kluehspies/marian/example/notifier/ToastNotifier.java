@@ -18,23 +18,13 @@ public class ToastNotifier<M> implements RewardListener<M> {
     }
 
     @Override
-    public void rewardNotAvailable(M resourceID, Trigger<M> trigger) {
-        showToast("Unlock Not Available: " + resourceID + " - " + trigger.getClass().getSimpleName());
+    public void unlockSucceeded(M item, Trigger<M> trigger) {
+        showToast("Unlock Succeeded: " + item + " - " + trigger.getClass().getSimpleName());
     }
 
     @Override
-    public void rewardAvailable(M resourceID, Trigger<M> trigger) {
-        showToast("Unlock Available: " + resourceID + " - " + trigger.getClass().getSimpleName());
-    }
-
-    @Override
-    public void unlockSucceeded(M resourceID, Trigger<M> trigger) {
-        showToast("Unlock Succeeded: " + resourceID + " - " + trigger.getClass().getSimpleName());
-    }
-
-    @Override
-    public void unlockFailed(M resourceID, Trigger<M> trigger) {
-        showToast("Unlock Failed: " + resourceID + " - " + trigger.getClass().getSimpleName());
+    public void unlockFailed(M item, Trigger<M> trigger) {
+        showToast("Unlock Failed: " + item + " - " + trigger.getClass().getSimpleName());
     }
 
     private void showToast(String message) {

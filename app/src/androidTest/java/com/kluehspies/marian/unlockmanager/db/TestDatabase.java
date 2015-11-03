@@ -2,6 +2,8 @@ package com.kluehspies.marian.unlockmanager.db;
 
 import android.content.Context;
 
+import com.kluehspies.marian.unlockmanager.persistence.Database;
+
 /**
  * Created by Andy on 16.10.2015.
  */

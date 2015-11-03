@@ -26,51 +26,41 @@ public class SharedPreferencesHandler<M> extends PersistenceHandler<M> {
     }
 
     @Override
-    public void rewardNotAvailable(M resourceID, Trigger<M> trigger) {
-
+    public void unlockFailed(M item, Trigger<M> trigger) {
+        setUnlockState(item, false);
     }
 
-    @Override
-    public void rewardAvailable(M resourceID, Trigger<M> trigger) {
-
-    }
-
-    @Override
-    public void unlockFailed(M resourceID, Trigger<M> trigger) {
-        setUnlockState(resourceID, false);
-    }
-
-    public void unlockSucceeded(M resourceID, Trigger<M> trigger) {
-        setUnlockState(resourceID, true);
+    public void unlockSucceeded(M item, Trigger<M> trigger) {
+        setUnlockState(item, true);
     }
 
 
-    private void setUnlockState(M resourceID, boolean state) {
-        preferences.edit().putBoolean(sharedPreferencesKey + "_" + resourceID, state).apply();
+    private void setUnlockState(M item, boolean state) {
+        preferences.edit().putBoolean(sharedPreferencesKey + "_" + item, state).apply();
     }
 
     /**
      * Let SharedPreferencesHandler handle the unlock for you if available
      *
-     * @param resourceID
+     * @param item
      */
     @Override
-    public void triggerUnlockIfAvailable(M resourceID) {
-        if (!isUnlocked(resourceID))
-            AndroidAchievementUnlocker.unlockFailed(this);
+    public void triggerUnlockIfAvailable(M item) {
+        if (!isUnlocked(item))
+            AndroidAchievementUnlocker.getDefault().unlockFailed(this);
         else
-            AndroidAchievementUnlocker.unlockSucceeded(this);
+            AndroidAchievementUnlocker.getDefault().unlockSucceeded(this);
     }
 
     /**
      * Request unlock state
      *
-     * @param resourceID
+     * @param item
      * @return
      */
     @Override
-    public boolean isUnlocked(M resourceID) {
-        return preferences.getBoolean(sharedPreferencesKey + "_" + resourceID.toString(), false);
+    public boolean isUnlocked(M item) {
+        return preferences.getBoolean(sharedPreferencesKey + "_" + item.toString(), false);
     }
 
 }

@@ -9,7 +9,6 @@ import com.kluehspies.marian.example.notifier.PushNotifier;
 import com.kluehspies.marian.example.notifier.ToastNotifier;
 import com.kluehspies.marian.example.trigger.Dialog;
 import com.kluehspies.marian.example.trigger.RewardView;
-import com.kluehspies.marian.unlockmanager.db.UnlockDataSource;
 import com.kluehspies.marian.unlockmanager.listener.RewardListener;
 import com.kluehspies.marian.unlockmanager.persistence.PersistenceHandler;
 import com.kluehspies.marian.unlockmanager.trigger.AndroidAchievementUnlocker;
@@ -27,16 +26,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        public void rewardNotAvailable(Integer resourceID, Trigger trigger) {
-
-        }
-
-        @Override
-        public void rewardAvailable(Integer resourceID, Trigger trigger) {
-
-        }
-
-        @Override
         public void unlockSucceeded(Integer resourceID, Trigger trigger) {
             SnackbarManager.getInstance().makeTextOnly(parentView, String.format("Unlock succeeded for: %s", resourceID));
         }
@@ -45,24 +34,14 @@ public class MainActivity extends AppCompatActivity {
         public void unlockFailed(Integer resourceID, Trigger trigger) {
 
         }
-    }
 
+    }
     private static class StringRewardListener implements RewardListener<String>{
 
         private final View parentView;
 
         public StringRewardListener(View parentView){
             this.parentView = parentView;
-        }
-
-        @Override
-        public void rewardNotAvailable(String resourceID, Trigger<String> trigger) {
-
-        }
-
-        @Override
-        public void rewardAvailable(String resourceID, Trigger<String> trigger) {
-
         }
 
         @Override
@@ -74,21 +53,26 @@ public class MainActivity extends AppCompatActivity {
         public void unlockFailed(String resourceID, Trigger<String> trigger) {
 
         }
+
     }
+
+    private AndroidAchievementUnlocker unlocker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        UnlockDataSource<Integer> persistenceHandler = new UnlockDataSource<Integer>(Integer.class,getApplicationContext(),"integer_key");
-        AndroidAchievementUnlocker.bindPersistenceHandler(persistenceHandler);
+        unlocker = AndroidAchievementUnlocker.getDefault();
+
+        PersistenceHandler<Integer> persistenceHandler = new SharedPreferencesHandler<>(Integer.class,getApplicationContext(),"integer_key");
+        unlocker.bindPersistenceHandler(persistenceHandler);
 
         SnackbarManager.getInstance().resume();
 
         //The listener will be called, if resources 1, 2, 3 or 4 are touched
-        AndroidAchievementUnlocker.bindListener(new IntegerRewardListener(findViewById(R.id.parent)), 1, 2, 3, 4);
-        AndroidAchievementUnlocker.bindListener(new StringRewardListener(findViewById(R.id.parent)), "a", "b", "c");
+        unlocker.bindListener(new IntegerRewardListener(findViewById(R.id.parent)), 1, 2, 3, 4);
+        unlocker.bindListener(new StringRewardListener(findViewById(R.id.parent)), "a", "b", "c");
 
         RewardView integerUnlockView = new RewardView(this,new Trigger<>(Integer.class,1,2,3,4));
         LinearLayout parent = (LinearLayout) findViewById(R.id.parent);
@@ -97,21 +81,21 @@ public class MainActivity extends AppCompatActivity {
         RewardView stringUnlockView = new RewardView(this,new Trigger<>(String.class,"a","b","c"));
         parent.addView(stringUnlockView);
 
-        AndroidAchievementUnlocker.bindListener(new PushNotifier(this), 4);
-        AndroidAchievementUnlocker.bindListener(new ToastNotifier(this), 3);
-        AndroidAchievementUnlocker.bindListener(new PushNotifier(this), "b");
-        AndroidAchievementUnlocker.bindListener(new ToastNotifier(this), "c");
+        unlocker.bindListener(new PushNotifier(this), 4);
+        unlocker.bindListener(new ToastNotifier(this), 3);
+        unlocker.bindListener(new PushNotifier(this), "b");
+        unlocker.bindListener(new ToastNotifier(this), "c");
 
         //Dialog can unlock resource 1
         new Dialog(this,new Trigger<>(Integer.class,1)).show();
 
-        AndroidAchievementUnlocker.triggerUnlockIfAvailable(1);
+        unlocker.triggerUnlockIfAvailable(1);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        AndroidAchievementUnlocker.unbindAll(Integer.class, String.class);
+        unlocker.unbindAll(Integer.class, String.class);
     }
 
 }
