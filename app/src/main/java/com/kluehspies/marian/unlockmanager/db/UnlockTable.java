@@ -3,7 +3,7 @@ package com.kluehspies.marian.unlockmanager.db;
 /**
  * Created by Andreas Schattney on 02.10.2015.
  */
-public class AchievementTable {
+public class UnlockTable {
 
     public static final String TABLE_NAME = "resource";
 

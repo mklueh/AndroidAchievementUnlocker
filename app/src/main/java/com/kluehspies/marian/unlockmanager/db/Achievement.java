@@ -5,19 +5,11 @@ package com.kluehspies.marian.unlockmanager.db;
  */
 public class Achievement {
 
-    private final String key;
-    private final String action;
-    private final String state;
+    private String key;
+    private String action;
+    private String state;
 
-    public Achievement(String key, String action){
-        this(key,action,null);
-    }
-
-    public Achievement(String key,String action,String state){
-        this.key = key;
-        this.action = action;
-        this.state = state;
-    }
+    public Achievement(){}
 
     public String getKey() {
         return key;
@@ -41,5 +33,17 @@ public class Achievement {
         if (o instanceof  Achievement)
             return key.equals(((Achievement) o).key);
         return false;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public void setAction(String action) {
+        this.action = action;
+    }
+
+    public void setState(String state) {
+        this.state = state;
     }
 }

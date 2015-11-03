@@ -5,10 +5,9 @@ import android.support.annotation.NonNull;
 import android.test.ApplicationTestCase;
 
 import com.kluehspies.marian.unlockmanager.db.Achievement;
-import com.kluehspies.marian.unlockmanager.db.AchievementDataSource;
 import com.kluehspies.marian.unlockmanager.db.TestDatabase;
+import com.kluehspies.marian.unlockmanager.db.UnlockDataSource;
 import com.kluehspies.marian.unlockmanager.listener.RewardListener;
-import com.kluehspies.marian.unlockmanager.manager.IRewardManager;
 import com.kluehspies.marian.unlockmanager.manager.RewardManager;
 import com.kluehspies.marian.unlockmanager.trigger.AndroidAchievementUnlocker;
 import com.kluehspies.marian.unlockmanager.trigger.Trigger;
@@ -27,6 +26,7 @@ public class RewardManagerTest extends ApplicationTestCase<Application> implemen
     private RewardManager<Integer> rewardManager;
     private Trigger<Integer> unlockTrigger;
     private TestDatabase testDatabase;
+    private UnlockDataSource<Achievement> dataSource;
 
     public RewardManagerTest() {
         super(Application.class);
@@ -47,6 +47,12 @@ public class RewardManagerTest extends ApplicationTestCase<Application> implemen
     public void setUp() throws Exception {
         super.setUp();
         testDatabase = (TestDatabase) TestDatabase.getInstance(getContext());
+        dataSource = new UnlockDataSource<Achievement>(Achievement.class,testDatabase) {
+            @Override
+            protected Achievement getNewInstance() {
+                return new Achievement();
+            }
+        };
         available = false;
         unlocked = false;
         rewardManager = new RewardManager<>(Integer.class);
@@ -82,36 +88,37 @@ public class RewardManagerTest extends ApplicationTestCase<Application> implemen
     }
 
     public void testAddAchievement(){
-        AchievementDataSource dataSource = new AchievementDataSource(testDatabase);
         Achievement achievement = createFakeAchievement();
         dataSource.openDatabase();
         internalAddAchievement(dataSource,achievement);
-        boolean equals = dataSource.getAchievements().size() == 1;
+        boolean equals = dataSource.get().size() == 1;
         dataSource.closeDatabase();
         assertTrue(equals);
     }
 
     public void testRemoveAchievement(){
         Achievement achievement = createFakeAchievement();
-        AchievementDataSource dataSource = new AchievementDataSource(testDatabase);
         dataSource.openDatabase();
         internalAddAchievement(dataSource,achievement);
-        dataSource.removeAchievement(achievement);
-        boolean equals = dataSource.getAchievements().size() == 0;
+        dataSource.remove(achievement);
+        boolean equals = dataSource.get().size() == 0;
         dataSource.closeDatabase();
         assertTrue(equals);
     }
 
     @NonNull
-    private void internalAddAchievement(AchievementDataSource dataSource,Achievement achievement) {
-        dataSource.addAchievement(achievement);
+    private void internalAddAchievement(UnlockDataSource<Achievement> dataSource,Achievement achievement) {
+        dataSource.add(achievement);
     }
 
     @NonNull
     private Achievement createFakeAchievement() {
         String key = UUID.randomUUID().toString();
         String action = UUID.randomUUID().toString();
-        return new Achievement(key,action);
+        Achievement achievement = new Achievement();
+        achievement.setKey(key);
+        achievement.setAction(action);
+        return achievement;
     }
 
     public void testGeneric(){
