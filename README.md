@@ -3,7 +3,7 @@
 This small library allows you to solve complex unlocking tasks.
 
 ## Build Status
-**Master Branch Status**  [![master](https://travis-ci.org/Nachbar90/AndroidAchievementUnlocker.svg?branch=master)](https://travis-ci.org/Nachbar90/AndroidAchievementUnlocker)
+**Master Branch Status**  [![master](https://travis-ci.org/Mklueh/AndroidAchievementUnlocker.svg?branch=master)](https://travis-ci.org/Mklueh/AndroidAchievementUnlocker)
 
 Example:
 
