@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.kluehspies.marian.example"
-        minSdkVersion 22
+        minSdkVersion 11
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
