@@ -8,7 +8,6 @@ import com.kluehspies.marian.unlockmanager.persistence.Achievement;
 import com.kluehspies.marian.unlockmanager.db.TestDatabase;
 import com.kluehspies.marian.unlockmanager.persistence.UnlockDataSource;
 import com.kluehspies.marian.unlockmanager.listener.RewardListener;
-import com.kluehspies.marian.unlockmanager.manager.RewardManager;
 import com.kluehspies.marian.unlockmanager.trigger.AndroidAchievementUnlocker;
 import com.kluehspies.marian.unlockmanager.trigger.Trigger;
 
@@ -21,7 +20,7 @@ public class RewardManagerTest extends ApplicationTestCase<Application> implemen
 
     private boolean unlocked = false;
     private int resourceID = 0;
-    private RewardManager<Integer> rewardManager;
+    private AndroidAchievementUnlocker androidAchievementUnlocker;
     private Trigger<Integer> unlockTrigger;
     private TestDatabase testDatabase;
     private UnlockDataSource<Achievement> dataSource;
@@ -44,7 +43,8 @@ public class RewardManagerTest extends ApplicationTestCase<Application> implemen
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        testDatabase = (TestDatabase) TestDatabase.getInstance(getContext());
+        androidAchievementUnlocker = AndroidAchievementUnlocker.getDefault();
+        testDatabase = TestDatabase.getInstance(getContext());
         dataSource = new UnlockDataSource<Achievement>(Achievement.class,testDatabase) {
             @Override
             protected String getTableName() {
@@ -57,10 +57,9 @@ public class RewardManagerTest extends ApplicationTestCase<Application> implemen
             }
         };
         unlocked = false;
-        rewardManager = new RewardManager<>(Integer.class);
         unlockTrigger = new SampleTrigger<>(Integer.class);
-        rewardManager.bindListener(this, resourceID);
-        rewardManager.bindTrigger(unlockTrigger = new Trigger<>(Integer.class), resourceID);
+        androidAchievementUnlocker.bindListener(this, resourceID);
+        androidAchievementUnlocker.bindTrigger(unlockTrigger = new Trigger<>(Integer.class), resourceID);
     }
 
     @Override
@@ -132,12 +131,12 @@ public class RewardManagerTest extends ApplicationTestCase<Application> implemen
     }
 
     @Override
-    public void unlockSucceeded(Integer resourceID, Trigger trigger) {
+    public void unlockSucceeded(Integer item, Trigger<Integer> trigger) {
         unlocked = true;
     }
 
     @Override
-    public void unlockFailed(Integer resourceID, Trigger trigger) {
+    public void unlockFailed(Integer item, Trigger<Integer> trigger) {
         unlocked = false;
     }
 }
