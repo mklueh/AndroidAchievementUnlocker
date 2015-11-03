@@ -26,6 +26,6 @@ public class TestDatabase extends Database {
     }
 
     public void drop(){
-        getWritableDatabase().execSQL(String.format("DROP DATABASE %s",DATABASE_NAME));
+        getWritableDatabase().execSQL(String.format("DROP DATABASE IF EXISTS %s",DATABASE_NAME));
     }
 }
