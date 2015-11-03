@@ -16,8 +16,8 @@ android:
 env:
   global:
    # install timeout in minutes (2 minutes by default)
-    - ADB_INSTALL_TIMEOUT=15
-    - SLAVE_AAPT_TIMEOUT=30
+    - ADB_INSTALL_TIMEOUT=20
+    - SLAVE_AAPT_TIMEOUT=40
 
 before_cache:
   - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock

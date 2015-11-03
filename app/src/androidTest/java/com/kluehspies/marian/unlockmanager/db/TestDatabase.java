@@ -19,9 +19,9 @@ public class TestDatabase extends Database {
     }
 
     public static synchronized TestDatabase getInstance(Context context) {
-        if (mTestDatabase == null) {
+        if (mTestDatabase == null)
             mTestDatabase = new TestDatabase(context);
-        }
+        
         return mTestDatabase;
     }
 
