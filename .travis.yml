@@ -38,4 +38,4 @@ script:
     - echo "Travis branch is in pull request? $TRAVIS_PULL_REQUEST"
     - echo "Travis tag $TRAVIS_TAG"
     - android list target
-    - ./gradlew connectedCheck
+    - gradle build connectedCheck
