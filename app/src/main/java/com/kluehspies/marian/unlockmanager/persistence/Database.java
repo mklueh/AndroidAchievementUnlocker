@@ -9,7 +9,7 @@ public class Database extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "achievement.db";
 
-    protected static Database mDatabase = null;
+    private static Database mDatabase = null;
 
     protected Database(Context context, String databaseName, int databaseVersion) {
         super(context, databaseName, null, databaseVersion);

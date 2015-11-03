@@ -12,15 +12,17 @@ public class TestDatabase extends Database {
     private static final String DATABASE_NAME = "test.db";
     private static final int DATABASE_VERSION = 1;
 
+    private static TestDatabase mTestDatabase;
+
     protected TestDatabase(Context context) {
         super(context, DATABASE_NAME, DATABASE_VERSION);
     }
 
     public static synchronized TestDatabase getInstance(Context context) {
-        if (mDatabase == null) {
-            mDatabase = new TestDatabase(context);
+        if (mTestDatabase == null) {
+            mTestDatabase = new TestDatabase(context);
         }
-        return (TestDatabase) mDatabase;
+        return mTestDatabase;
     }
 
     public void drop(){
