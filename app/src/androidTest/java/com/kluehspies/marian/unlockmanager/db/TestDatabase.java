@@ -16,6 +16,13 @@ public class TestDatabase extends Database {
         super(context, DATABASE_NAME, DATABASE_VERSION);
     }
 
+    public static synchronized TestDatabase getInstance(Context context) {
+        if (mDatabase == null) {
+            mDatabase = new TestDatabase(context);
+        }
+        return (TestDatabase) mDatabase;
+    }
+
     public void drop(){
         getWritableDatabase().execSQL(String.format("DROP DATABASE %s",DATABASE_NAME));
     }
