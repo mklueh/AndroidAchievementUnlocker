@@ -9,6 +9,7 @@ import com.kluehspies.marian.example.notifier.PushNotifier;
 import com.kluehspies.marian.example.notifier.ToastNotifier;
 import com.kluehspies.marian.example.trigger.Dialog;
 import com.kluehspies.marian.example.trigger.RewardView;
+import com.kluehspies.marian.unlockmanager.db.UnlockDataSource;
 import com.kluehspies.marian.unlockmanager.listener.RewardListener;
 import com.kluehspies.marian.unlockmanager.persistence.PersistenceHandler;
 import com.kluehspies.marian.unlockmanager.trigger.AndroidAchievementUnlocker;
@@ -80,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        PersistenceHandler<Integer> persistenceHandler = new SharedPreferencesHandler<>(Integer.class,getApplicationContext(),"integer_key");
+        UnlockDataSource<Integer> persistenceHandler = new UnlockDataSource<Integer>(Integer.class,getApplicationContext(),"integer_key");
         AndroidAchievementUnlocker.bindPersistenceHandler(persistenceHandler);
 
         SnackbarManager.getInstance().resume();
