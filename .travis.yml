@@ -16,7 +16,7 @@ android:
 env:
   global:
    # install timeout in minutes (2 minutes by default)
-    - ADB_INSTALL_TIMEOUT=8
+    - ADB_INSTALL_TIMEOUT=15
     - SLAVE_AAPT_TIMEOUT=30
 
 before_cache:
