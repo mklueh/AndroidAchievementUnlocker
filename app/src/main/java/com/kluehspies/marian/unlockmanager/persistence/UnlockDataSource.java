@@ -27,19 +27,37 @@ public abstract class UnlockDataSource<T extends Achievement> extends Persistenc
 
     protected abstract String getTableName();
 
+    /**
+     * returns the associated table.
+     * If @code{getTableName()} == null => standard table name, otherwise the custom table name is returned
+     * @return table name
+     */
     private String internalGetTableName(){
         String tableName = getTableName();
         return tableName == null || tableName.trim().equals("") ? UnlockTable.TABLE_NAME : tableName;
     }
 
+    /**
+     * opens the database
+     */
     public void openDatabase(){
         sqLiteDatabase = database.getWritableDatabase();
     }
 
+    /**
+     * add an @code{item} to the database with STATE_LOCKED.
+     * @param item item
+     * @return true if the item was added to the database, false otherwise
+     */
     public boolean add(T item){
         return add(item, STATE_LOCKED);
     }
 
+    /**
+     * add an @code{item} to the database with STATE_LOCKED or STATE_UNLOCKED
+     * @param item item
+     * @return true if the item was added to the database, false otherwise
+     */
     public boolean add(T item,String state){
         ContentValues cv = new ContentValues();
         cv.put(UnlockTable.COLUMN_KEY,item.getKey());
@@ -49,6 +67,12 @@ public abstract class UnlockDataSource<T extends Achievement> extends Persistenc
         return sqLiteDatabase.insert(internalGetTableName(), null, cv) > 0;
     }
 
+    /**
+     * updates the item with the @code{state}
+     * @param item item
+     * @param state state
+     * @return true if item was updated, false otherwise
+     */
     public boolean update(T item, String state){
         ContentValues cv = new ContentValues();
         cv.put(UnlockTable.COLUMN_UNLOCK_STATE, state);
@@ -64,6 +88,11 @@ public abstract class UnlockDataSource<T extends Achievement> extends Persistenc
         }
     }
 
+    /**
+     * checks for existence of the item in the database
+     * @param item item
+     * @return true if the item exists, false otherwise
+     */
     private boolean exists(T item) {
         Cursor cursor = sqLiteDatabase.query(
                 getTableName(),
@@ -76,6 +105,11 @@ public abstract class UnlockDataSource<T extends Achievement> extends Persistenc
         return exists;
     }
 
+    /**
+     * deletes an item from the database
+     * @param item item
+     * @return true if the item was deleted, false otherwise
+     */
     public boolean remove(T item){
         return sqLiteDatabase.delete(
                 internalGetTableName(),
@@ -84,6 +118,11 @@ public abstract class UnlockDataSource<T extends Achievement> extends Persistenc
         ) > 0;
     }
 
+    /**
+     *
+     * @param item item
+     * @return true if the item is @code{STATE_LOCKED}, false otherwise
+     */
     public boolean isLocked(T item){
         return getStatus(item).equals(STATE_LOCKED);
     }

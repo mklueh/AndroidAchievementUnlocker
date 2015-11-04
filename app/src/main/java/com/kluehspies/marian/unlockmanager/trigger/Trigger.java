@@ -5,13 +5,13 @@ package com.kluehspies.marian.unlockmanager.trigger;
  */
 public class Trigger<M> {
 
-    private final Class clazz;
+    private final Class<M> clazz;
 
-    public Trigger(Class clazz) {
+    public Trigger(Class<M> clazz) {
         this.clazz = clazz;
     }
 
-    public Trigger(Class clazz, M... items) {
+    public Trigger(Class<M> clazz, M... items) {
         this(clazz);
         AndroidAchievementUnlocker.getDefault().bindTrigger(this, items);
     }

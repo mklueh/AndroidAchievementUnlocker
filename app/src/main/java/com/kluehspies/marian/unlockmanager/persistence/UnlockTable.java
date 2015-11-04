@@ -7,9 +7,24 @@ class UnlockTable {
 
     public static final String TABLE_NAME = "resource";
 
+    /**
+     * identifier for the unlock event
+     */
     public static final String COLUMN_KEY = "unique_key";
+
+    /**
+     * the action the unlock was triggered by
+     */
     public static final String COLUMN_ACTION = "action";
+
+    /**
+     * State of the Event
+     */
     public static final String COLUMN_UNLOCK_STATE = "unlock_state";
+
+    /**
+     * Timestamp event added
+     */
     public static final String COLUMN_TIMESTAMP = "created_at";
 
     public static final String TABLE_CREATE = "CREATE TABLE IF NOT EXISTS "
