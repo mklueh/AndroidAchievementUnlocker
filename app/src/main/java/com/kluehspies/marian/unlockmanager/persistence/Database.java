@@ -24,7 +24,8 @@ public class Database extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(UnlockTable.TABLE_CREATE);
+        String createTable = UnlockTable.TABLE_CREATE;
+        db.execSQL(createTable);
     }
 
     @Override

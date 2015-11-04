@@ -118,11 +118,11 @@ public abstract class UnlockDataSource<T extends Achievement> extends Persistenc
 
     protected abstract T getNewInstance();
 
-    protected ContentValues onBindValues(ContentValues contentValues,T item){
-        return contentValues;
+    protected void onBindValues(ContentValues contentValues,T item){
+
     }
-    protected T onBindModel(Cursor cursor, T item){
-        return item;
+    protected void onBindModel(Cursor cursor, T item){
+
     }
 
     private List<T> internalGet(String withState){
@@ -130,7 +130,7 @@ public abstract class UnlockDataSource<T extends Achievement> extends Persistenc
         Cursor cursor = sqLiteDatabase.query(
                 internalGetTableName(),
                 null,
-                String.format("%s = ?", UnlockTable.COLUMN_UNLOCK_STATE),
+                (withState != null) ? String.format("%s = ?", UnlockTable.COLUMN_UNLOCK_STATE) : null,
                 (withState != null) ? new String[]{withState} : null,
                 null,null,null
         );

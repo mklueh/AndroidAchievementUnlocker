@@ -1,6 +1,7 @@
 package com.kluehspies.marian.unlockmanager.db;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 
 import com.kluehspies.marian.unlockmanager.persistence.Database;
 
@@ -21,11 +22,27 @@ public class TestDatabase extends Database {
     public static synchronized TestDatabase getInstance(Context context) {
         if (mTestDatabase == null)
             mTestDatabase = new TestDatabase(context);
-        
         return mTestDatabase;
     }
 
-    public void drop(){
-        getWritableDatabase().execSQL(String.format("DROP DATABASE IF EXISTS %s",DATABASE_NAME));
+    @Override
+    public void onCreate(SQLiteDatabase db) {
+        super.onCreate(db);
+    }
+
+    @Override
+    public void onOpen(SQLiteDatabase db) {
+        super.onOpen(db);
+    }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        super.onUpgrade(db, oldVersion, newVersion);
+    }
+
+    public void drop(Context context){
+        String path = getWritableDatabase().getPath();
+        getWritableDatabase().close();
+        context.deleteDatabase(path);
     }
 }

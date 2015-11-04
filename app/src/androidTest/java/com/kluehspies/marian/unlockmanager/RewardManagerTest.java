@@ -64,7 +64,7 @@ public class RewardManagerTest extends ApplicationTestCase<Application> implemen
 
     @Override
     protected void tearDown() throws Exception {
-        testDatabase.drop();
+        testDatabase.drop(getContext());
         super.tearDown();
     }
 
