@@ -9,9 +9,9 @@ This small library allows you to solve complex content unlocking tasks within yo
 
 Example:
 
-- You have two locked Resources (Images, Features, etc...) A, B and C
+- You have multiple locked Resources (Images, Features, etc...) A, B and C
 
-- You have three Reward Triggers
+- You have multiple Reward Triggers
     1. User rates the app
     2. User shares the app
     3. User keeps the app for at least 2 days
