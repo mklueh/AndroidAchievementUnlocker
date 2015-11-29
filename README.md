@@ -2,7 +2,7 @@
 
 This small library allows you to solve complex content unlocking tasks within your Android App.
 
-Reward Users for certain tasks - drive User Engagement - Push your Application Ratings and Active Users
+>Reward Users for certain tasks - drive User Engagement - Push your Application Ratings and Active Users<
 
 ## Build Status
 **Master Branch Status**  [![master](https://travis-ci.org/Mklueh/AndroidAchievementUnlocker.svg?branch=master)](https://travis-ci.org/Mklueh/AndroidAchievementUnlocker)
