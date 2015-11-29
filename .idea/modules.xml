@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/AndroidAchievementUnlocker.iml" filepath="$PROJECT_DIR$/AndroidAchievementUnlocker.iml" />
       <module fileurl="file://$PROJECT_DIR$/Example/Example.iml" filepath="$PROJECT_DIR$/Example/Example.iml" />
-      <module fileurl="file://$PROJECT_DIR$/UnlockManager.iml" filepath="$PROJECT_DIR$/UnlockManager.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
