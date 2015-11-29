@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
 
     private AndroidAchievementUnlocker unlocker;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
