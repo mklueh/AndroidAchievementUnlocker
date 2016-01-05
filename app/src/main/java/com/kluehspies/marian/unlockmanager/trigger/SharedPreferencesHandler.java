@@ -45,7 +45,7 @@ public class SharedPreferencesHandler<M> extends PersistenceHandler<M> {
      * @param item
      */
     @Override
-    public void triggerUnlockIfAvailable(M item) {
+    public void triggerCurrentUnlockState(M item) {
         if (!isUnlocked(item))
             AndroidAchievementUnlocker.getDefault().unlockFailed(this);
         else
@@ -61,6 +61,11 @@ public class SharedPreferencesHandler<M> extends PersistenceHandler<M> {
     @Override
     public boolean isUnlocked(M item) {
         return preferences.getBoolean(sharedPreferencesKey + "_" + item.toString(), false);
+    }
+
+    @Override
+    public boolean wasUnlockedPreviously(M item) {
+        return isUnlocked(item);
     }
 
 }

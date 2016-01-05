@@ -2,7 +2,6 @@ package com.kluehspies.marian.example;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 import android.widget.LinearLayout;
 
 import com.kluehspies.marian.example.notifier.PushNotifier;
@@ -10,7 +9,6 @@ import com.kluehspies.marian.example.notifier.ToastNotifier;
 import com.kluehspies.marian.example.trigger.Dialog;
 import com.kluehspies.marian.example.trigger.RewardView;
 import com.kluehspies.marian.unlockmanager.listener.IntRewardListener;
-import com.kluehspies.marian.unlockmanager.listener.RewardListener;
 import com.kluehspies.marian.unlockmanager.listener.StringRewardListener;
 import com.kluehspies.marian.unlockmanager.persistence.PersistenceHandler;
 import com.kluehspies.marian.unlockmanager.trigger.AndroidAchievementUnlocker;
@@ -29,8 +27,8 @@ public class MainActivity extends AppCompatActivity {
 
         unlocker = AndroidAchievementUnlocker.getDefault();
 
-        PersistenceHandler<Integer> persistenceHandler = new SharedPreferencesHandler<>(Integer.class, getApplicationContext(), "integer_key");
-        unlocker.bindPersistenceHandler(persistenceHandler);
+        unlocker.setPersistenceHandler(new SharedPreferencesHandler<>(Integer.class, getApplicationContext(), "integer_key"));
+        unlocker.setPersistenceHandler(new SharedPreferencesHandler<>(String.class, getApplicationContext(), "string_key"));
 
         SnackbarManager.getInstance().resume();
 

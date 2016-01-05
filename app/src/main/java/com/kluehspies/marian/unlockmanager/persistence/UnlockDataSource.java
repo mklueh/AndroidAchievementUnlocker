@@ -14,11 +14,11 @@ import java.util.List;
  */
 public abstract class UnlockDataSource<T extends Achievement> extends PersistenceHandler<T>{
 
-    private final Database database;
-    private SQLiteDatabase sqLiteDatabase;
-
     public static final String STATE_UNLOCKED = "UNLOCKED";
     public static final String STATE_LOCKED = "LOCKED";
+
+    private final Database database;
+    private SQLiteDatabase sqLiteDatabase;
 
     public UnlockDataSource(Class<T> clazz,Database database){
         super(clazz);
@@ -160,6 +160,7 @@ public abstract class UnlockDataSource<T extends Achievement> extends Persistenc
     protected void onBindValues(ContentValues contentValues,T item){
 
     }
+
     protected void onBindModel(Cursor cursor, T item){
 
     }
@@ -208,11 +209,11 @@ public abstract class UnlockDataSource<T extends Achievement> extends Persistenc
     }
 
     @Override
-    public void triggerUnlockIfAvailable(T item) {
+    public void triggerCurrentUnlockState(T item) {
         if (isUnlocked(item))
-            unlockSucceeded(item,this);
+            unlockSucceeded(item, this);
         else
-            unlockFailed(item,this);
+            unlockFailed(item, this);
     }
 
     @Override
@@ -220,4 +221,8 @@ public abstract class UnlockDataSource<T extends Achievement> extends Persistenc
         return getStatus(item).equals(STATE_UNLOCKED);
     }
 
+    @Override
+    public boolean wasUnlockedPreviously(T item) {
+        return isUnlocked(item);
+    }
 }

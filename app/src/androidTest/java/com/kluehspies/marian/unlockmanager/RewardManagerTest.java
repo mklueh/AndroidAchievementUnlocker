@@ -4,8 +4,9 @@ import android.app.Application;
 import android.support.annotation.NonNull;
 import android.test.ApplicationTestCase;
 
-import com.kluehspies.marian.unlockmanager.persistence.Achievement;
+import com.kluehspies.marian.unlockmanager.persistence.AchievementImpl;
 import com.kluehspies.marian.unlockmanager.db.TestDatabase;
+import com.kluehspies.marian.unlockmanager.persistence.Achievement;
 import com.kluehspies.marian.unlockmanager.persistence.UnlockDataSource;
 import com.kluehspies.marian.unlockmanager.listener.RewardListener;
 import com.kluehspies.marian.unlockmanager.trigger.AndroidAchievementUnlocker;
@@ -53,7 +54,7 @@ public class RewardManagerTest extends ApplicationTestCase<Application> implemen
 
             @Override
             protected Achievement getNewInstance() {
-                return new Achievement();
+                return new AchievementImpl();
             }
         };
         unlocked = false;
@@ -106,7 +107,7 @@ public class RewardManagerTest extends ApplicationTestCase<Application> implemen
     private Achievement createFakeAchievement() {
         String key = UUID.randomUUID().toString();
         String action = UUID.randomUUID().toString();
-        Achievement achievement = new Achievement();
+        Achievement achievement = new AchievementImpl();
         achievement.setKey(key);
         achievement.setAction(action);
         return achievement;

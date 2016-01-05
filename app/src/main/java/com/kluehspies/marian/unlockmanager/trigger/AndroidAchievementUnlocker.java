@@ -5,10 +5,7 @@ import com.kluehspies.marian.unlockmanager.manager.IRewardManager;
 import com.kluehspies.marian.unlockmanager.manager.RewardManager;
 import com.kluehspies.marian.unlockmanager.persistence.PersistenceHandler;
 
-import java.lang.ref.WeakReference;
-import java.util.Collections;
 import java.util.Map;
-import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -25,25 +22,25 @@ public class AndroidAchievementUnlocker {
         return defaultInstance;
     }
 
+    public void setPersistenceHandler(PersistenceHandler<?> persistenceHandler){
+        if (!persistenceHandlers.containsKey(persistenceHandler.forClass())){
+            persistenceHandlers.put(persistenceHandler.forClass(), persistenceHandler);
+        }
+    }
+
     private AndroidAchievementUnlocker(){}
 
     private ConcurrentMap<Class,IRewardManager<?>> rewardManagers = new ConcurrentHashMap<>();
-
-    public <M> void bindPersistenceHandler(PersistenceHandler<M> persistenceHandler){
-        Class clazz = persistenceHandler.forClass();
-        if (!rewardManagerExists(clazz))
-            addRewardManager(new RewardManager<M>(clazz));
-        IRewardManager<M> rewardManager = getRewardManager(persistenceHandler.forClass());
-        rewardManager.bindPersistenceHandler(persistenceHandler);
-    }
+    private ConcurrentMap<Class,PersistenceHandler<?>> persistenceHandlers = new ConcurrentHashMap<>();
 
     public <M> void triggerUnlockIfAvailable(M item) {
-        getRewardManager(item.getClass()).triggerUnlockIfAvailable(item);
+        getRewardManager(item.getClass()).triggerCurrentUnlockState(item);
     }
 
     private void addRewardManager(IRewardManager rewardManager){
         Class clazz = rewardManager.forClass();
-        if (!rewardManagers.containsKey(clazz)){
+        if (!rewardManagerExists(clazz)){
+            rewardManager.bindPersistenceHandler(persistenceHandlers.get(clazz));
             rewardManagers.put(clazz, rewardManager);
         }
     }
