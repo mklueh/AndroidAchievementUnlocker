@@ -10,6 +10,7 @@ import com.kluehspies.marian.unlockmanager.persistence.Achievement;
 import com.kluehspies.marian.unlockmanager.persistence.UnlockDataSource;
 import com.kluehspies.marian.unlockmanager.listener.RewardListener;
 import com.kluehspies.marian.unlockmanager.trigger.AndroidAchievementUnlocker;
+import com.kluehspies.marian.unlockmanager.trigger.SharedPreferencesHandler;
 import com.kluehspies.marian.unlockmanager.trigger.Trigger;
 
 import java.util.UUID;
@@ -57,6 +58,8 @@ public class RewardManagerTest extends ApplicationTestCase<Application> implemen
                 return new AchievementImpl();
             }
         };
+        androidAchievementUnlocker.setPersistenceHandler(dataSource);
+        androidAchievementUnlocker.setPersistenceHandler(new SharedPreferencesHandler<>(Integer.class,getContext(), "integer_key"));
         unlocked = false;
         unlockTrigger = new SampleTrigger<>(Integer.class);
         androidAchievementUnlocker.bindListener(this, resourceID);
