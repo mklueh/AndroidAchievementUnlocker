@@ -17,6 +17,8 @@ Example:
     3. User keeps the app for at least 2 days
 
 
+![alt tag](https://raw.githubusercontent.com/Mklueh/AndroidAchievementUnlocker/master/screenshot_01.png)
+
 With Android Achievement Unlocker, you can define multiple unlock relations between triggers and resources
 
 Examples:
