@@ -7,6 +7,9 @@ This small library allows you to solve complex content unlocking tasks within yo
 ## Build Status
 **Master Branch Status**  [![master](https://travis-ci.org/Mklueh/AndroidAchievementUnlocker.svg?branch=master)](https://travis-ci.org/Mklueh/AndroidAchievementUnlocker)
 
+![alt tag](https://raw.githubusercontent.com/Mklueh/AndroidAchievementUnlocker/master/screenshot_02.png)
+
+
 Example:
 
 - You have multiple locked Resources (Images, Features, etc...) A, B and C
