@@ -1,8 +1,12 @@
 package com.kluehspies.marian.example;
 
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.kluehspies.marian.example.notifier.PushNotifier;
 import com.kluehspies.marian.example.notifier.ToastNotifier;
@@ -81,10 +85,23 @@ public class MainActivity extends AppCompatActivity {
         LinearLayout parent = (LinearLayout) findViewById(R.id.parent);
         parent.addView(integerUnlockView);
 
+
+        Button clearPrefs = new Button(this);
+        clearPrefs.setText("Clear SharedPreferences");
+        clearPrefs.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().clear().apply();
+                        Toast.makeText(getApplicationContext(), "SharedPreferences cleared", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+
         //RewardView gets notified if a,b or c are unlocked
         RewardView stringUnlockView = new RewardView(this, new Trigger<>(String.class, "a", "b", "c"));
         parent.addView(stringUnlockView);
-
+        parent.addView(clearPrefs);
         unlocker.triggerCurrentUnlockState(1);
     }
 
