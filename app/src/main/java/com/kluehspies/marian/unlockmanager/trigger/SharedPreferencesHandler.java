@@ -40,19 +40,6 @@ public class SharedPreferencesHandler<M> extends PersistenceHandler<M> {
     }
 
     /**
-     * Let SharedPreferencesHandler handle the unlock for you if available
-     *
-     * @param item
-     */
-    @Override
-    public void triggerCurrentUnlockState(M item) {
-        if (!isUnlocked(item))
-            AndroidAchievementUnlocker.getDefault().unlockFailed(this);
-        else
-            AndroidAchievementUnlocker.getDefault().unlockSucceeded(this);
-    }
-
-    /**
      * Request unlock state
      *
      * @param item

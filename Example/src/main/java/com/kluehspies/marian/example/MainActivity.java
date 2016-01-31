@@ -10,7 +10,6 @@ import com.kluehspies.marian.example.trigger.Dialog;
 import com.kluehspies.marian.example.trigger.RewardView;
 import com.kluehspies.marian.unlockmanager.listener.IntRewardListener;
 import com.kluehspies.marian.unlockmanager.listener.StringRewardListener;
-import com.kluehspies.marian.unlockmanager.persistence.PersistenceHandler;
 import com.kluehspies.marian.unlockmanager.trigger.AndroidAchievementUnlocker;
 import com.kluehspies.marian.unlockmanager.trigger.SharedPreferencesHandler;
 import com.kluehspies.marian.unlockmanager.trigger.Trigger;
@@ -86,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
         RewardView stringUnlockView = new RewardView(this, new Trigger<>(String.class, "a", "b", "c"));
         parent.addView(stringUnlockView);
 
-        unlocker.triggerUnlockIfAvailable(1);
+        unlocker.triggerCurrentUnlockState(1);
     }
 
     @Override

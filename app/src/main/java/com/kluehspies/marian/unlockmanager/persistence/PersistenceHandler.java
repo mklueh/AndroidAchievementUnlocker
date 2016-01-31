@@ -11,8 +11,7 @@ public abstract class PersistenceHandler<M> extends Trigger<M> implements Reward
     public PersistenceHandler(Class<M> clazz) {
         super(clazz);
     }
-
-    public abstract void triggerCurrentUnlockState(M item);
+    
     public abstract boolean isUnlocked(M item);
     public abstract boolean wasUnlockedPreviously(M item);
 }

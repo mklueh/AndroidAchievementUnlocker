@@ -209,14 +209,6 @@ public abstract class UnlockDataSource<T extends Achievement> extends Persistenc
     }
 
     @Override
-    public void triggerCurrentUnlockState(T item) {
-        if (isUnlocked(item))
-            unlockSucceeded(item, this);
-        else
-            unlockFailed(item, this);
-    }
-
-    @Override
     public boolean isUnlocked(T item) {
         return getStatus(item).equals(STATE_UNLOCKED);
     }

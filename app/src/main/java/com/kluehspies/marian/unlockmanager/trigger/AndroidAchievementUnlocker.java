@@ -33,7 +33,7 @@ public class AndroidAchievementUnlocker {
     private ConcurrentMap<Class,IRewardManager<?>> rewardManagers = new ConcurrentHashMap<>();
     private ConcurrentMap<Class,PersistenceHandler<?>> persistenceHandlers = new ConcurrentHashMap<>();
 
-    public <M> void triggerUnlockIfAvailable(M item) {
+    public <M> void triggerCurrentUnlockState(M item) {
         getRewardManager(item.getClass()).triggerCurrentUnlockState(item);
     }
 

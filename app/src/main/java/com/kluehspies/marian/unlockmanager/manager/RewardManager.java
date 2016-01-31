@@ -107,7 +107,6 @@ public final class RewardManager<M> implements IRewardManager<M> {
     @Override
     public void triggerCurrentUnlockState(M item) {
         if (persistenceHandler != null) {
-            persistenceHandler.triggerCurrentUnlockState(item);
             Type type = persistenceHandler.isUnlocked(item) ? Type.SUCCEEDED : Type.FAILED;
             notifyRewardListeners(item, type, persistenceHandler);
         }
