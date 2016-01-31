@@ -3,23 +3,20 @@ package com.kluehspies.marian.unlockmanager.trigger;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import com.kluehspies.marian.unlockmanager.manager.IRewardManager;
+
 import com.kluehspies.marian.unlockmanager.persistence.PersistenceHandler;
-import com.kluehspies.marian.unlockmanager.trigger.AndroidAchievementUnlocker;
-import com.kluehspies.marian.unlockmanager.trigger.Trigger;
 
 /**
  * Created by Marian Klühspies on 21.01.2015.
  *
  * Default implementation of PersistenceHandler
  */
-
 public class SharedPreferencesHandler<M> extends PersistenceHandler<M> {
 
     private String sharedPreferencesKey;
     private SharedPreferences preferences;
 
-    public SharedPreferencesHandler(Class<M> clazz,Context context, String sharedPreferencesKey) {
+    public SharedPreferencesHandler(Class<M> clazz, Context context, String sharedPreferencesKey) {
         super(clazz);
         this.preferences = PreferenceManager.getDefaultSharedPreferences(context);
         this.sharedPreferencesKey = sharedPreferencesKey;
