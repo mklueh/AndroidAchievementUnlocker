@@ -22,10 +22,15 @@ public class Database extends SQLiteOpenHelper {
         return mDatabase;
     }
 
+    public void createTableIfNotExists(TableParams tableParams){
+        SQLiteDatabase db = getWritableDatabase();
+        final String createTable = tableParams.TABLE_CREATE;
+        db.execSQL(createTable);
+    }
+
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String createTable = UnlockTable.TABLE_CREATE;
-        db.execSQL(createTable);
+
     }
 
     @Override

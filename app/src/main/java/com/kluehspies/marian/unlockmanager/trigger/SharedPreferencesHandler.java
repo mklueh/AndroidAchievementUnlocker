@@ -3,10 +3,8 @@ package com.kluehspies.marian.unlockmanager.trigger;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import com.kluehspies.marian.unlockmanager.manager.IRewardManager;
+
 import com.kluehspies.marian.unlockmanager.persistence.PersistenceHandler;
-import com.kluehspies.marian.unlockmanager.trigger.AndroidAchievementUnlocker;
-import com.kluehspies.marian.unlockmanager.trigger.Trigger;
 
 /**
  * Created by Marian Klühspies on 21.01.2015.
@@ -26,14 +24,29 @@ public class SharedPreferencesHandler<M> extends PersistenceHandler<M> {
     }
 
     @Override
-    public void unlockFailed(M item, Trigger<M> trigger) {
-        setUnlockState(item, false);
-    }
-
-    public void unlockSucceeded(M item, Trigger<M> trigger) {
+    public void unlock(M item, String triggerName) {
         setUnlockState(item, true);
+        setTriggeredFrom(item, triggerName);
     }
 
+    @Override
+    public void lock(M item, String triggerName) {
+        setUnlockState(item, false);
+        setTriggeredFrom(item, triggerName);
+    }
+
+    @Override
+    public String getItemTriggeredFrom(M item) {
+        return getTriggeredFrom(item);
+    }
+
+    private String getTriggeredFrom(M item) {
+        return preferences.getString(sharedPreferencesKey + item.toString() +  "_trigger", null);
+    }
+
+    private void setTriggeredFrom(M item, String triggerName) {
+        preferences.edit().putString(sharedPreferencesKey + item.toString() + "_trigger", triggerName).apply();
+    }
 
     private void setUnlockState(M item, boolean state) {
         preferences.edit().putBoolean(sharedPreferencesKey + "_" + item, state).apply();
@@ -48,11 +61,6 @@ public class SharedPreferencesHandler<M> extends PersistenceHandler<M> {
     @Override
     public boolean isUnlocked(M item) {
         return preferences.getBoolean(sharedPreferencesKey + "_" + item.toString(), false);
-    }
-
-    @Override
-    public boolean wasUnlockedPreviously(M item) {
-        return isUnlocked(item);
     }
 
 }

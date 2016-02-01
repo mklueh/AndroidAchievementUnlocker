@@ -31,37 +31,26 @@ public class RewardManagerTest extends ApplicationTestCase<Application> implemen
         super(Application.class);
     }
 
-    class SampleTrigger<M> extends Trigger<M> {
-
-        public SampleTrigger(Class clazz) {
-            super(clazz);
-        }
-
-        public SampleTrigger(Class clazz, M... items) {
-            super(clazz, items);
-        }
-    }
-
     @Override
     public void setUp() throws Exception {
         super.setUp();
         androidAchievementUnlocker = AndroidAchievementUnlocker.getDefault();
         testDatabase = TestDatabase.getInstance(getContext());
-        dataSource = new UnlockDataSource<Achievement>(Achievement.class,testDatabase) {
+        dataSource = new UnlockDataSource<Achievement>(Achievement.class, testDatabase) {
             @Override
             protected String getTableName() {
                 return null;
             }
 
             @Override
-            protected Achievement getNewInstance() {
+            protected Achievement createNewDataModelInstance() {
                 return new AchievementImpl();
             }
         };
-        androidAchievementUnlocker.setPersistenceHandler(dataSource);
-        androidAchievementUnlocker.setPersistenceHandler(new SharedPreferencesHandler<>(Integer.class,getContext(), "integer_key"));
+        androidAchievementUnlocker.addPersistenceHandler(dataSource);
+        androidAchievementUnlocker.addPersistenceHandler(new SharedPreferencesHandler<>(Integer.class, getContext(), "integer_key"));
         unlocked = false;
-        unlockTrigger = new SampleTrigger<>(Integer.class);
+        unlockTrigger = new Trigger<>(Integer.class);
         androidAchievementUnlocker.bindListener(this, resourceID);
         androidAchievementUnlocker.bindTrigger(unlockTrigger = new Trigger<>(Integer.class), resourceID);
     }
@@ -109,10 +98,8 @@ public class RewardManagerTest extends ApplicationTestCase<Application> implemen
     @NonNull
     private Achievement createFakeAchievement() {
         String key = UUID.randomUUID().toString();
-        String action = UUID.randomUUID().toString();
         Achievement achievement = new AchievementImpl();
         achievement.setKey(key);
-        achievement.setAction(action);
         return achievement;
     }
 
@@ -131,7 +118,7 @@ public class RewardManagerTest extends ApplicationTestCase<Application> implemen
             public void unlockFailed(Achievement achievement, Trigger<Achievement> trigger) {
 
             }
-        },item);
+        }, item);
     }
 
     @Override

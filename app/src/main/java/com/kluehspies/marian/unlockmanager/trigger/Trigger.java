@@ -6,14 +6,19 @@ package com.kluehspies.marian.unlockmanager.trigger;
 public class Trigger<M> {
 
     private final Class<M> clazz;
+    private final String name;
 
-    public Trigger(Class<M> clazz) {
+    public Trigger(Class<M> clazz, String name) {
         this.clazz = clazz;
+        this.name = name;
     }
 
-    public Trigger(Class<M> clazz, M... items) {
-        this(clazz);
-        AndroidAchievementUnlocker.getDefault().bindTrigger(this, items);
+    public Trigger(Class<M> clazz) {
+        this(clazz, "");
+    }
+
+    public String getName() {
+        return name;
     }
 
     public Class forClass() {

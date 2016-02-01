@@ -161,8 +161,8 @@ public final class RewardManager<M> implements IRewardManager<M> {
     private void notifyListeners(Trigger<M> trigger, Type type) {
         List<M> resourceIDs = triggerResourceBindingMap.get(trigger);
         for (M item : resourceIDs) {
-            if (!persistenceHandler.wasUnlockedPreviously(item)) {
-                notifyPersistenceHandler(item, type, trigger);
+            if (!persistenceHandler.isUnlocked(item)) {
+                notifyPersistenceHandler(item, type, trigger.getName());
                 notifyRewardListeners(item, type, trigger);
             }
         }
@@ -183,22 +183,17 @@ public final class RewardManager<M> implements IRewardManager<M> {
                     }
     }
 
-    private void notifyPersistenceHandler(M item, Type type, Trigger<M> trigger) {
+    private void notifyPersistenceHandler(M item, Type type, String triggerName) {
         if (persistenceHandler != null) {
             switch (type) {
                 case SUCCEEDED:
-                    persistenceHandler.unlockSucceeded(item, trigger);
+                    persistenceHandler.unlock(item, triggerName);
                     break;
                 case FAILED:
-                    persistenceHandler.unlockFailed(item, trigger);
+                    persistenceHandler.lock(item, triggerName);
                     break;
             }
         }
-    }
-
-    @Override
-    public boolean hasValidPersistenceHandler(){
-        return persistenceHandler != null;
     }
 
     enum Type {

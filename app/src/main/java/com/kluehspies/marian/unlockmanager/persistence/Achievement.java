@@ -5,9 +5,11 @@ package com.kluehspies.marian.unlockmanager.persistence;
  */
 public interface Achievement {
     String getKey();
-    String getAction();
     String getState();
     void setKey(String key);
-    void setAction(String action);
     void setState(String state);
+    void setTriggeredFrom(String triggerName);
+    String getTriggeredFrom();
+    int hashCode();
+    boolean equals(Object o);
 }

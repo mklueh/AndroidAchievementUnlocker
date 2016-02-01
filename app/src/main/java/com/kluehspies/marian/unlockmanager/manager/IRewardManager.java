@@ -24,5 +24,4 @@ public interface IRewardManager<M> {
     void unbindListeners(M item);
     void bindPersistenceHandler(PersistenceHandler<M> persistenceHandler);
     void triggerCurrentUnlockState(M item);
-    boolean hasValidPersistenceHandler();
 }

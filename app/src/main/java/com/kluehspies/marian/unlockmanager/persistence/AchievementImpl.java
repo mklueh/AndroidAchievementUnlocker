@@ -6,29 +6,24 @@ package com.kluehspies.marian.unlockmanager.persistence;
 public class AchievementImpl implements Achievement {
 
     private String key;
-    private String action;
     private String state;
+    private String triggerName = null;
 
     public AchievementImpl(){}
 
     @Override
     public int hashCode() {
-        return key.hashCode() + action.hashCode();
+        return key.hashCode();
     }
 
     @Override
     public boolean equals(Object o) {
-        return o instanceof Achievement && key.equals(((AchievementImpl) o).key) && action.equals(((AchievementImpl) o).action);
+        return o instanceof Achievement && key.equals(((AchievementImpl) o).key);
     }
 
     @Override
     public String getKey() {
         return key;
-    }
-
-    @Override
-    public String getAction() {
-        return action;
     }
 
     @Override
@@ -42,13 +37,18 @@ public class AchievementImpl implements Achievement {
     }
 
     @Override
-    public void setAction(String action) {
-        this.action = action;
+    public void setState(String state) {
+        this.state = state;
     }
 
     @Override
-    public void setState(String state) {
-        this.state = state;
+    public void setTriggeredFrom(String triggerName) {
+        this.triggerName = triggerName;
+    }
+
+    @Override
+    public String getTriggeredFrom() {
+        return triggerName;
     }
 
 }

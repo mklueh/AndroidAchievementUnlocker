@@ -22,10 +22,20 @@ public class AndroidAchievementUnlocker {
         return defaultInstance;
     }
 
-    public void setPersistenceHandler(PersistenceHandler<?> persistenceHandler){
+    public boolean addPersistenceHandler(PersistenceHandler<?> persistenceHandler){
         if (!persistenceHandlers.containsKey(persistenceHandler.forClass())){
             persistenceHandlers.put(persistenceHandler.forClass(), persistenceHandler);
+            return true;
         }
+        return false;
+    }
+
+    public boolean removePersistenceHandler(Class forClass){
+        if (persistenceHandlers.containsKey(forClass)) {
+            persistenceHandlers.remove(forClass);
+            return true;
+        }
+        return false;
     }
 
     private AndroidAchievementUnlocker(){}
@@ -37,10 +47,30 @@ public class AndroidAchievementUnlocker {
         getRewardManager(item.getClass()).triggerCurrentUnlockState(item);
     }
 
+    public <M> boolean isUnlocked(M item){
+        Class clazz = item.getClass();
+        PersistenceHandler<M> persistenceHandler = getPersistenceHandler(clazz);
+        return persistenceHandler.isUnlocked(item);
+    }
+
+    public <M> boolean isLocked(M item){
+        return !isUnlocked(item);
+    }
+
+    public <M> String itemTriggeredFrom(M item){
+        Class clazz = item.getClass();
+        PersistenceHandler<M> persistenceHandler = getPersistenceHandler(clazz);
+        return persistenceHandler.getItemTriggeredFrom(item);
+    }
+
+
+    private <M> PersistenceHandler<M> getPersistenceHandler(Class clazz){
+        return (PersistenceHandler<M>) persistenceHandlers.get(clazz);
+    }
     private void addRewardManager(IRewardManager rewardManager){
         Class clazz = rewardManager.forClass();
         if (!rewardManagerExists(clazz)){
-            rewardManager.bindPersistenceHandler(persistenceHandlers.get(clazz));
+            rewardManager.bindPersistenceHandler(getPersistenceHandler(clazz));
             rewardManagers.put(clazz, rewardManager);
         }
     }
@@ -57,7 +87,7 @@ public class AndroidAchievementUnlocker {
     }
 
     private <M> IRewardManager<M> getRewardManager(Class clazz){
-        IRewardManager<M> rewardManager = (IRewardManager<M>) rewardManagers.get(clazz);
+        IRewardManager<M> rewardManager = getRewardManager(clazz);
         return rewardManager;
     }
 
@@ -114,7 +144,7 @@ public class AndroidAchievementUnlocker {
             IRewardManager rewardManager = getRewardManager(clazz);
             rewardManager.unbindTriggers();
             rewardManager.unbindListeners();
-            rewardManagers.remove(clazz);
+            removeRewardManager(rewardManager);
         }
     }
 
