@@ -1,6 +1,7 @@
 package com.kluehspies.marian.unlockmanager;
 
 import android.app.Application;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.test.ApplicationTestCase;
 
@@ -27,6 +28,7 @@ public class RewardManagerTest extends ApplicationTestCase<Application> implemen
     private Trigger<Integer> unlockTrigger;
     private TestDatabase testDatabase;
     private UnlockDataSource<AchievementImpl> dataSource;
+    private TableParams tableParams;
 
     public RewardManagerTest() {
         super(Application.class);
@@ -35,9 +37,10 @@ public class RewardManagerTest extends ApplicationTestCase<Application> implemen
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        TableParams tableParams = new TableParams.Builder().setTableName("test").build();
+        tableParams = new TableParams.Builder().setTableName("test").build();
         androidAchievementUnlocker = AndroidAchievementUnlocker.getDefault();
         testDatabase = TestDatabase.getInstance(getContext());
+        testDatabase.createTableIfNotExists(tableParams);
         dataSource = new UnlockDataSource<AchievementImpl>(AchievementImpl.class, testDatabase, tableParams) {
 
             @Override
@@ -48,13 +51,15 @@ public class RewardManagerTest extends ApplicationTestCase<Application> implemen
         androidAchievementUnlocker.addPersistenceHandler(dataSource);
         androidAchievementUnlocker.addPersistenceHandler(new SharedPreferencesHandler<>(Integer.class, getContext(), "integer_key"));
         unlocked = false;
-        unlockTrigger = new Trigger<>(Integer.class);
         androidAchievementUnlocker.bindListener(this, resourceID);
-        androidAchievementUnlocker.bindTrigger(unlockTrigger = new Trigger<>(Integer.class), resourceID);
+        unlockTrigger = new Trigger<>(Integer.class);
+        androidAchievementUnlocker.bindTrigger(unlockTrigger, resourceID);
     }
 
     @Override
     protected void tearDown() throws Exception {
+        testDatabase.dropTableIfExists(tableParams);
+        PreferenceManager.getDefaultSharedPreferences(getContext()).edit().clear().apply();
         testDatabase.drop(getContext());
         super.tearDown();
     }
