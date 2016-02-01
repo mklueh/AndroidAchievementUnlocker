@@ -11,13 +11,12 @@ import com.kluehspies.marian.unlockmanager.persistence.PersistenceHandler;
  *
  * Default implementation of PersistenceHandler
  */
-
 public class SharedPreferencesHandler<M> extends PersistenceHandler<M> {
 
     private String sharedPreferencesKey;
     private SharedPreferences preferences;
 
-    public SharedPreferencesHandler(Class<M> clazz,Context context, String sharedPreferencesKey) {
+    public SharedPreferencesHandler(Class<M> clazz, Context context, String sharedPreferencesKey) {
         super(clazz);
         this.preferences = PreferenceManager.getDefaultSharedPreferences(context);
         this.sharedPreferencesKey = sharedPreferencesKey;

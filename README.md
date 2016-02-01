@@ -7,6 +7,9 @@ This small library allows you to solve complex content unlocking tasks within yo
 ## Build Status
 **Master Branch Status**  [![master](https://travis-ci.org/Mklueh/AndroidAchievementUnlocker.svg?branch=master)](https://travis-ci.org/Mklueh/AndroidAchievementUnlocker)
 
+![alt tag](https://raw.githubusercontent.com/Mklueh/AndroidAchievementUnlocker/master/screenshot_02.png)
+
+
 Example:
 
 - You have multiple locked Resources (Images, Features, etc...) A, B and C
@@ -16,6 +19,8 @@ Example:
     2. User shares the app
     3. User keeps the app for at least 2 days
 
+
+![alt tag](https://raw.githubusercontent.com/Mklueh/AndroidAchievementUnlocker/master/screenshot_01.png)
 
 With Android Achievement Unlocker, you can define multiple unlock relations between triggers and resources
 
