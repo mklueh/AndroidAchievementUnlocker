@@ -11,6 +11,8 @@ public class AchievementImpl implements Achievement {
 
     public AchievementImpl(){}
 
+    public AchievementImpl(String key){ this.key = key;}
+
     @Override
     public int hashCode() {
         return key.hashCode();

@@ -3,6 +3,8 @@ package com.kluehspies.marian.unlockmanager.trigger;
 import com.kluehspies.marian.unlockmanager.listener.RewardListener;
 import com.kluehspies.marian.unlockmanager.manager.IRewardManager;
 import com.kluehspies.marian.unlockmanager.manager.RewardManager;
+import com.kluehspies.marian.unlockmanager.persistence.Achievement;
+import com.kluehspies.marian.unlockmanager.persistence.AchievementImpl;
 import com.kluehspies.marian.unlockmanager.persistence.PersistenceHandler;
 
 import java.util.Map;
@@ -87,7 +89,7 @@ public class AndroidAchievementUnlocker {
     }
 
     private <M> IRewardManager<M> getRewardManager(Class clazz){
-        IRewardManager<M> rewardManager = getRewardManager(clazz);
+        IRewardManager<M> rewardManager = (IRewardManager<M>) rewardManagers.get(clazz);
         return rewardManager;
     }
 
@@ -105,12 +107,12 @@ public class AndroidAchievementUnlocker {
             bindTrigger(trigger,item);
     }
 
-    public <M> void bindListener(RewardListener<M> trigger,M item){
+    public <M> void bindListener(RewardListener<M> listener,M item){
         Class clazz = item.getClass();
         if (!rewardManagerExists(clazz))
             addRewardManager(new RewardManager<M>(clazz));
         IRewardManager<M> rewardManager = getRewardManager(clazz);
-        rewardManager.bindListener(trigger, item);
+        rewardManager.bindListener(listener, item);
     }
 
     public <M> void bindListener(RewardListener<M> trigger,M... items){
@@ -182,4 +184,11 @@ public class AndroidAchievementUnlocker {
             entry.getValue().unbindListeners();
         rewardManagers.clear();
     }
+
+    public <M> void triggerUnlock(M... items) {
+        for (M item : items) {
+            getRewardManager(item.getClass()).triggerUnlock(item);
+        }
+    }
+
 }

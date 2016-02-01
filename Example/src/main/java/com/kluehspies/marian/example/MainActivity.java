@@ -13,6 +13,7 @@ import com.kluehspies.marian.example.notifier.ToastNotifier;
 import com.kluehspies.marian.example.trigger.Dialog;
 import com.kluehspies.marian.example.trigger.RewardView;
 import com.kluehspies.marian.unlockmanager.listener.IntRewardListener;
+import com.kluehspies.marian.unlockmanager.listener.RewardListener;
 import com.kluehspies.marian.unlockmanager.listener.StringRewardListener;
 import com.kluehspies.marian.unlockmanager.persistence.Achievement;
 import com.kluehspies.marian.unlockmanager.persistence.AchievementImpl;
@@ -28,20 +29,33 @@ public class MainActivity extends AppCompatActivity {
 
     private AndroidAchievementUnlocker unlocker;
 
+    private AchievementImpl createAchievement(String key){
+        AchievementImpl achievement = new AchievementImpl();
+        achievement.setKey(key);
+        return achievement;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        TableParams tableParams = new TableParams.Builder().setTableName("example_resource_table").build();
-        Database database = DbFactory.create(getApplicationContext(), tableParams);
+        final TableParams tableParams = new TableParams.Builder().setTableName("example_resource_table").build();
+        final Database database = DbFactory.create(getApplicationContext(), tableParams);
 
-        UnlockDataSource<Achievement> dataSource = new UnlockDataSource<Achievement>(Achievement.class, database, tableParams) {
+        UnlockDataSource<AchievementImpl> dataSource = new UnlockDataSource<AchievementImpl>(AchievementImpl.class, database, tableParams) {
             @Override
-            protected Achievement createNewDataModelInstance() {
+            protected AchievementImpl createNewDataModelInstance() {
                 return new AchievementImpl();
             }
         };
+
+        dataSource.openDatabase();
+        dataSource.add(createAchievement("1"), UnlockDataSource.STATE_LOCKED);
+        dataSource.add(createAchievement("2"), UnlockDataSource.STATE_LOCKED);
+        dataSource.add(createAchievement("3"), UnlockDataSource.STATE_LOCKED);
+        dataSource.add(createAchievement("4"), UnlockDataSource.STATE_LOCKED);
+        dataSource.closeDatabase();
 
         unlocker = AndroidAchievementUnlocker.getDefault();
 
@@ -85,6 +99,34 @@ public class MainActivity extends AppCompatActivity {
                 }, "a", "b", "c");
 
 
+        unlocker.bindListener(new RewardListener<AchievementImpl>() {
+            @Override
+            public void unlockSucceeded(AchievementImpl item, Trigger<AchievementImpl> trigger) {
+                SnackbarManager.getInstance().makeTextOnly(
+                        findViewById(R.id.parent),
+                        String.format("Unlock succeeded for: Achievement with key: %s and triggered by: %s", item.getKey(), trigger.getName()));
+            }
+
+            @Override
+            public void unlockFailed(AchievementImpl item, Trigger<AchievementImpl> trigger) {
+                SnackbarManager.getInstance().makeTextOnly(
+                        findViewById(R.id.parent),
+                        String.format("Unlock failed for: Achievement with key: %s", item.getKey()));
+            }
+        }, new AchievementImpl("1"), new AchievementImpl("2"));
+
+        unlocker.bindListener(new RewardListener<AchievementImpl>() {
+            @Override
+            public void unlockSucceeded(AchievementImpl item, Trigger<AchievementImpl> trigger) {
+                Toast.makeText(MainActivity.this,String.format("Unlock succeeded for: Achievement with key: %s and triggered by: %s", item.getKey(), trigger.getName()),Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void unlockFailed(AchievementImpl item, Trigger<AchievementImpl> trigger) {
+                Toast.makeText(MainActivity.this,String.format("Unlock failed for: Achievement with key: %s and triggered by: %s", item.getKey(), trigger.getName()),Toast.LENGTH_SHORT).show();
+            }
+        }, new AchievementImpl("3"));
+
         //Listeners get notified if an unlock succeeds/fails
         unlocker.bindListener(new PushNotifier(this), 4);
         unlocker.bindListener(new ToastNotifier(this), 3);
@@ -109,13 +151,14 @@ public class MainActivity extends AppCompatActivity {
 
 
         Button clearPrefs = new Button(this);
-        clearPrefs.setText("Clear SharedPreferences");
+        clearPrefs.setText("Clear Saved Data");
         clearPrefs.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().clear().apply();
-                        Toast.makeText(getApplicationContext(), "SharedPreferences cleared", Toast.LENGTH_SHORT).show();
+                        database.dropTableIfExists(tableParams);
+                        Toast.makeText(getApplicationContext(), "Data cleared", Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -123,10 +166,19 @@ public class MainActivity extends AppCompatActivity {
         //RewardView gets notified if a,b or c are unlocked
         Trigger<String> rewardViewStringTrigger = new Trigger<>(String.class);
         unlocker.bindTrigger(rewardViewStringTrigger, "a", "b", "c", "d");
-        RewardView stringUnlockView = new RewardView(this, rewardViewIntegerTrigger);
+        RewardView stringUnlockView = new RewardView(this, rewardViewStringTrigger);
+
+        Trigger<AchievementImpl> achievementTrigger = new Trigger<>(AchievementImpl.class, "Achievement-RewardView");
+        unlocker.bindTrigger(achievementTrigger, new AchievementImpl("3"));
+        RewardView achievementUnlockView = new RewardView(this, achievementTrigger);
+
         parent.addView(stringUnlockView);
+        parent.addView(achievementUnlockView);
         parent.addView(clearPrefs);
+
         unlocker.triggerCurrentUnlockState(1);
+
+        unlocker.triggerUnlock(new AchievementImpl("1"), new AchievementImpl("2"));
     }
 
     @Override

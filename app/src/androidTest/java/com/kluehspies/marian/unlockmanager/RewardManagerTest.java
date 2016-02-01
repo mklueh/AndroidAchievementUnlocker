@@ -7,6 +7,7 @@ import android.test.ApplicationTestCase;
 import com.kluehspies.marian.unlockmanager.persistence.AchievementImpl;
 import com.kluehspies.marian.unlockmanager.db.TestDatabase;
 import com.kluehspies.marian.unlockmanager.persistence.Achievement;
+import com.kluehspies.marian.unlockmanager.persistence.TableParams;
 import com.kluehspies.marian.unlockmanager.persistence.UnlockDataSource;
 import com.kluehspies.marian.unlockmanager.listener.RewardListener;
 import com.kluehspies.marian.unlockmanager.trigger.AndroidAchievementUnlocker;
@@ -25,7 +26,7 @@ public class RewardManagerTest extends ApplicationTestCase<Application> implemen
     private AndroidAchievementUnlocker androidAchievementUnlocker;
     private Trigger<Integer> unlockTrigger;
     private TestDatabase testDatabase;
-    private UnlockDataSource<Achievement> dataSource;
+    private UnlockDataSource<AchievementImpl> dataSource;
 
     public RewardManagerTest() {
         super(Application.class);
@@ -34,16 +35,13 @@ public class RewardManagerTest extends ApplicationTestCase<Application> implemen
     @Override
     public void setUp() throws Exception {
         super.setUp();
+        TableParams tableParams = new TableParams.Builder().setTableName("test").build();
         androidAchievementUnlocker = AndroidAchievementUnlocker.getDefault();
         testDatabase = TestDatabase.getInstance(getContext());
-        dataSource = new UnlockDataSource<Achievement>(Achievement.class, testDatabase) {
-            @Override
-            protected String getTableName() {
-                return null;
-            }
+        dataSource = new UnlockDataSource<AchievementImpl>(AchievementImpl.class, testDatabase, tableParams) {
 
             @Override
-            protected Achievement createNewDataModelInstance() {
+            protected AchievementImpl createNewDataModelInstance() {
                 return new AchievementImpl();
             }
         };
@@ -72,7 +70,7 @@ public class RewardManagerTest extends ApplicationTestCase<Application> implemen
     }
 
     public void testAddAchievement(){
-        Achievement achievement = createFakeAchievement();
+        AchievementImpl achievement = createFakeAchievement();
         dataSource.openDatabase();
         internalAddAchievement(dataSource,achievement);
         boolean equals = dataSource.get().size() == 1;
@@ -81,7 +79,7 @@ public class RewardManagerTest extends ApplicationTestCase<Application> implemen
     }
 
     public void testRemoveAchievement(){
-        Achievement achievement = createFakeAchievement();
+        AchievementImpl achievement = createFakeAchievement();
         dataSource.openDatabase();
         internalAddAchievement(dataSource,achievement);
         dataSource.remove(achievement);
@@ -91,14 +89,14 @@ public class RewardManagerTest extends ApplicationTestCase<Application> implemen
     }
 
     @NonNull
-    private void internalAddAchievement(UnlockDataSource<Achievement> dataSource,Achievement achievement) {
+    private void internalAddAchievement(UnlockDataSource<AchievementImpl> dataSource,AchievementImpl achievement) {
         dataSource.add(achievement);
     }
 
     @NonNull
-    private Achievement createFakeAchievement() {
+    private AchievementImpl createFakeAchievement() {
         String key = UUID.randomUUID().toString();
-        Achievement achievement = new AchievementImpl();
+        AchievementImpl achievement = new AchievementImpl();
         achievement.setKey(key);
         return achievement;
     }

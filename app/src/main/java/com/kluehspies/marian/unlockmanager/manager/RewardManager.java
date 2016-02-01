@@ -1,5 +1,7 @@
 package com.kluehspies.marian.unlockmanager.manager;
 
+import android.support.annotation.NonNull;
+
 import com.kluehspies.marian.unlockmanager.listener.RewardListener;
 import com.kluehspies.marian.unlockmanager.persistence.PersistenceHandler;
 import com.kluehspies.marian.unlockmanager.trigger.Trigger;
@@ -15,6 +17,7 @@ import java.util.concurrent.ConcurrentMap;
  */
 public final class RewardManager<M> implements IRewardManager<M> {
 
+    public static final String TRIGGERED_FROM_CODE = "TRIGGERED_FROM_CODE";
     private ConcurrentMap<Trigger<M>, List<M>> triggerResourceBindingMap = new ConcurrentHashMap<>();
     private ConcurrentMap<M, List<RewardListener<M>>> resourceListenerBindingMap = new ConcurrentHashMap<>();
     private Class clazz;
@@ -106,9 +109,20 @@ public final class RewardManager<M> implements IRewardManager<M> {
 
     @Override
     public void triggerCurrentUnlockState(M item) {
-        if (persistenceHandler != null) {
-            Type type = persistenceHandler.isUnlocked(item) ? Type.SUCCEEDED : Type.FAILED;
-            notifyRewardListeners(item, type, persistenceHandler);
+        Type type = persistenceHandler.isUnlocked(item) ? Type.SUCCEEDED : Type.FAILED;
+        notifyRewardListeners(item, type, createFromCodeTrigger(item));
+    }
+
+    @NonNull
+    private Trigger<M> createFromCodeTrigger(M item) {
+        return new Trigger<>((Class<M>) item.getClass(), TRIGGERED_FROM_CODE);
+    }
+
+    @Override
+    public void triggerUnlock(M item) {
+        if (!persistenceHandler.isUnlocked(item)) {
+            persistenceHandler.unlock(item, TRIGGERED_FROM_CODE);
+            notifyRewardListeners(item, Type.SUCCEEDED, createFromCodeTrigger(item));
         }
     }
 

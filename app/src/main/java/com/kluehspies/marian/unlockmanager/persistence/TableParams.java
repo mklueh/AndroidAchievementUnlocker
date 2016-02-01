@@ -40,7 +40,7 @@ public class TableParams {
                 .append(tableName + "(")
                 .append(columnKey + " TEXT NOT NULL, ")
                 .append(columnUnlockState + " TEXT NOT NULL, ")
-                .append(columnTriggeredFrom + " TEXT NOT NULL, ")
+                .append(columnTriggeredFrom + " TEXT, ")
                 .append(columnTimestamp + " TIMESTAMP DEFAULT CURRENT_TIMESTAMP, ");
 
         for (int i = 0; i < customColumns.size(); i++) {

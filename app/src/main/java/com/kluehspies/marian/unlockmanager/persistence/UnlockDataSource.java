@@ -38,7 +38,10 @@ public abstract class UnlockDataSource<T extends Achievement> extends Persistenc
      * @return true if the item was added to the database, false otherwise
      */
     public boolean add(T item){
-        return add(item, STATE_LOCKED);
+        boolean temporarilyOpen = ensureDatabaseIsOpen();
+        boolean result = add(item, STATE_LOCKED);
+        ensureTemporarilyOpenedDbGetsClosed(temporarilyOpen);
+        return result;
     }
 
     /**
@@ -51,7 +54,10 @@ public abstract class UnlockDataSource<T extends Achievement> extends Persistenc
         cv.put(params.columnKey,item.getKey());
         cv.put(params.columnUnlockState, (state == null) ? STATE_LOCKED : state);
         onBindValues(cv, item);
-        return sqLiteDatabase.insert(params.getTableName(), null, cv) > 0;
+        boolean temporarilyOpen = ensureDatabaseIsOpen();
+        boolean amountRowsInserted = sqLiteDatabase.insert(params.getTableName(), null, cv) > 0;
+        ensureTemporarilyOpenedDbGetsClosed(temporarilyOpen);
+        return amountRowsInserted;
     }
 
     /**
@@ -64,16 +70,20 @@ public abstract class UnlockDataSource<T extends Achievement> extends Persistenc
         ContentValues cv = new ContentValues();
         cv.put(params.columnUnlockState, state);
         cv.put(params.columnTriggeredFrom, triggerName);
+        boolean temporarilyOpen = ensureDatabaseIsOpen();
+        long rowsModifiedOrInserted = 0;
         if (exists(item)) {
-            return sqLiteDatabase.update(
+            rowsModifiedOrInserted = sqLiteDatabase.update(
                     params.getTableName(),
                     cv,
                     String.format("%s = ?", params.columnKey),
                     new String[]{item.getKey()}
-            ) > 0;
+            );
         }else{
-            return sqLiteDatabase.insert(params.getTableName(), null, cv) > 0;
+            rowsModifiedOrInserted = sqLiteDatabase.insert(params.getTableName(), null, cv);
         }
+        ensureTemporarilyOpenedDbGetsClosed(temporarilyOpen);
+        return rowsModifiedOrInserted > 0;
     }
 
     /**
@@ -85,7 +95,7 @@ public abstract class UnlockDataSource<T extends Achievement> extends Persistenc
         Cursor cursor = sqLiteDatabase.query(
                 params.getTableName(),
                 null,
-                String.format("%s = ?", params.getTableName()),
+                String.format("%s = ?", params.columnKey),
                 new String[]{item.getKey()}, null, null, null
         );
         boolean exists = cursor.moveToFirst();
@@ -99,11 +109,14 @@ public abstract class UnlockDataSource<T extends Achievement> extends Persistenc
      * @return true if the item was deleted, false otherwise
      */
     public boolean remove(T item){
-        return sqLiteDatabase.delete(
+        boolean temporarilyOpen = ensureDatabaseIsOpen();
+        int rowsRemoved = sqLiteDatabase.delete(
                 params.getTableName(),
                 String.format("%s = ?", params.columnKey),
                 new String[]{item.getKey()}
-        ) > 0;
+        );
+        ensureTemporarilyOpenedDbGetsClosed(temporarilyOpen);
+        return rowsRemoved > 0;
     }
 
     /**
@@ -112,7 +125,10 @@ public abstract class UnlockDataSource<T extends Achievement> extends Persistenc
      * @return true if the item is @code{STATE_LOCKED}, false otherwise
      */
     public boolean isLocked(T item){
-        return getStatus(item).equals(STATE_LOCKED);
+        boolean temporarilyOpen = ensureDatabaseIsOpen();
+        boolean status = getStatus(item).equals(STATE_LOCKED);
+        ensureTemporarilyOpenedDbGetsClosed(temporarilyOpen);
+        return status;
     }
 
     private String getStatus(T item){
@@ -214,18 +230,39 @@ public abstract class UnlockDataSource<T extends Achievement> extends Persistenc
     }
 
     @Override
-    public void unlock(T item, String triggerName){
+    public void unlock(T item, String triggerName) {
+        boolean temporarilyOpen = ensureDatabaseIsOpen();
         update(item, triggerName, STATE_UNLOCKED);
+        ensureTemporarilyOpenedDbGetsClosed(temporarilyOpen);
     }
 
     @Override
     public void lock(T item, String triggerName){
+        boolean temporarilyOpen = ensureDatabaseIsOpen();
         update(item, triggerName, STATE_LOCKED);
+        ensureTemporarilyOpenedDbGetsClosed(temporarilyOpen);
+    }
+
+    private void ensureTemporarilyOpenedDbGetsClosed(boolean temporarilyOpen) {
+        if (!temporarilyOpen) {
+            sqLiteDatabase.close();
+            sqLiteDatabase = null;
+        }
+    }
+
+    private boolean ensureDatabaseIsOpen() {
+        boolean isAlreadyOpen = (sqLiteDatabase != null) && (sqLiteDatabase.isOpen());
+        if (!isAlreadyOpen)
+            sqLiteDatabase = database.getWritableDatabase();
+        return isAlreadyOpen;
     }
 
     @Override
     public String getItemTriggeredFrom(T item) {
-        return getTriggeredFrom(item);
+        boolean temporarilyOpen = ensureDatabaseIsOpen();
+        String triggerName = getTriggeredFrom(item);
+        ensureTemporarilyOpenedDbGetsClosed(temporarilyOpen);
+        return triggerName;
     }
 
     private String getTriggeredFrom(T item) {
@@ -246,7 +283,10 @@ public abstract class UnlockDataSource<T extends Achievement> extends Persistenc
 
     @Override
     public boolean isUnlocked(T item) {
-        return getStatus(item).equals(STATE_UNLOCKED);
+        boolean temporarilyOpen = ensureDatabaseIsOpen();
+        boolean status = getStatus(item).equals(STATE_UNLOCKED);
+        ensureTemporarilyOpenedDbGetsClosed(temporarilyOpen);
+        return status;
     }
 
 }

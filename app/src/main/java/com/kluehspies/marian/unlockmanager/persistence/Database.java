@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class Database extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
-    private static final String DATABASE_NAME = "achievement.db";
+    private static final String DATABASE_NAME = "unlocker.db";
 
     private static Database mDatabase = null;
 
@@ -26,6 +26,7 @@ public class Database extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         final String createTable = tableParams.TABLE_CREATE;
         db.execSQL(createTable);
+        db.close();
     }
 
     @Override
@@ -38,4 +39,10 @@ public class Database extends SQLiteOpenHelper {
 
     }
 
+    public void dropTableIfExists(TableParams tableParams) {
+        SQLiteDatabase db = getWritableDatabase();
+        final String dropTable = tableParams.TABLE_DROP;
+        db.execSQL(dropTable);
+        db.close();
+    }
 }
