@@ -20,20 +20,22 @@ public class PushNotifier<M> implements RewardListener<M> {
 
     @Override
     public void unlockSucceeded(M item, Trigger<M> trigger) {
-        showNotification("Unlock succeeded " + trigger.getClass().getSimpleName());
+        showNotification("Unlock succeded" ,item.getClass().getSimpleName(), item.toString());
     }
 
     @Override
     public void unlockFailed(M item, Trigger<M> trigger) {
-        showNotification("Unlock failed " + trigger.getClass().getSimpleName());
+        showNotification("Unlock failed" ,item.getClass().getSimpleName(), item.toString());
     }
 
-    private void showNotification(String text) {
+    private void showNotification(String title, String text, String subText) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
         builder.setSmallIcon(android.R.drawable.ic_menu_info_details);
         builder.setAutoCancel(true);
-        builder.setContentTitle(text);
+        builder.setContentTitle(title);
+        builder.setContentText(text);
+        builder.setSubText(subText);
         builder.build();
-        ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE)).notify(1, builder.build());
+        ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE)).notify(0, builder.build());
     }
 }

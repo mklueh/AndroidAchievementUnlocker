@@ -13,7 +13,8 @@ public abstract class PersistenceHandler<M> extends Trigger<M> {
     }
 
     public abstract boolean isUnlocked(M item);
-    public abstract void unlock(M item, String triggerName);
-    public abstract void lock(M item, String triggerName);
+    public abstract M unlock(M item, String triggerName);
+    public abstract M lock(M item, String triggerName);
     public abstract String getItemTriggeredFrom(M item);
+    public abstract M get(M item);
 }

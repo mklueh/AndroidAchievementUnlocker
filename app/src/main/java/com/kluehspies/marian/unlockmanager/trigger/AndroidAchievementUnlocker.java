@@ -3,8 +3,6 @@ package com.kluehspies.marian.unlockmanager.trigger;
 import com.kluehspies.marian.unlockmanager.listener.RewardListener;
 import com.kluehspies.marian.unlockmanager.manager.IRewardManager;
 import com.kluehspies.marian.unlockmanager.manager.RewardManager;
-import com.kluehspies.marian.unlockmanager.persistence.Achievement;
-import com.kluehspies.marian.unlockmanager.persistence.AchievementImpl;
 import com.kluehspies.marian.unlockmanager.persistence.PersistenceHandler;
 
 import java.util.Map;
@@ -142,12 +140,19 @@ public class AndroidAchievementUnlocker {
     }
 
     public void unbindAll(Class clazz){
-        if (rewardManagers.containsKey(clazz)){
+        if (rewardManagerExists(clazz)){
             IRewardManager rewardManager = getRewardManager(clazz);
             rewardManager.unbindTriggers();
             rewardManager.unbindListeners();
             removeRewardManager(rewardManager);
         }
+        if (persistenceHandlerExists(clazz)){
+            removePersistenceHandler(clazz);
+        }
+    }
+
+    private boolean persistenceHandlerExists(Class clazz) {
+        return persistenceHandlers.containsKey(clazz);
     }
 
     public void unbindAll(Class... clazzes){

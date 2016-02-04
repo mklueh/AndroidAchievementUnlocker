@@ -5,7 +5,6 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.test.ApplicationTestCase;
 
-import com.kluehspies.marian.unlockmanager.persistence.AchievementImpl;
 import com.kluehspies.marian.unlockmanager.db.TestDatabase;
 import com.kluehspies.marian.unlockmanager.persistence.Achievement;
 import com.kluehspies.marian.unlockmanager.persistence.TableParams;

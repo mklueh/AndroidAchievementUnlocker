@@ -181,7 +181,7 @@ public abstract class UnlockDataSource<T extends Achievement> extends Persistenc
         item.setKey(key);
         item.setTriggeredFrom(triggeredFrom);
         item.setState(state);
-        onBindModel(cursor,item);
+        onBindModel(cursor, item);
         return item;
     }
 
@@ -230,17 +230,21 @@ public abstract class UnlockDataSource<T extends Achievement> extends Persistenc
     }
 
     @Override
-    public void unlock(T item, String triggerName) {
-        boolean temporarilyOpen = ensureDatabaseIsOpen();
-        update(item, triggerName, STATE_UNLOCKED);
-        ensureTemporarilyOpenedDbGetsClosed(temporarilyOpen);
+    public T unlock(T item, String triggerName) {
+        return changeItemState(item, triggerName, STATE_UNLOCKED);
     }
 
     @Override
-    public void lock(T item, String triggerName){
+    public T lock(T item, String triggerName){
+        return changeItemState(item, triggerName, STATE_LOCKED);
+    }
+
+    private T changeItemState(T item, String triggerName, String state){
         boolean temporarilyOpen = ensureDatabaseIsOpen();
-        update(item, triggerName, STATE_LOCKED);
+        update(item, triggerName, state);
+        T updatedItem = get(item.getKey());
         ensureTemporarilyOpenedDbGetsClosed(temporarilyOpen);
+        return updatedItem;
     }
 
     private void ensureTemporarilyOpenedDbGetsClosed(boolean temporarilyOpen) {
@@ -289,4 +293,8 @@ public abstract class UnlockDataSource<T extends Achievement> extends Persistenc
         return status;
     }
 
+    @Override
+    public T get(T item) {
+        return get(item.getKey());
+    }
 }

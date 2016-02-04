@@ -110,6 +110,7 @@ public final class RewardManager<M> implements IRewardManager<M> {
     @Override
     public void triggerCurrentUnlockState(M item) {
         Type type = persistenceHandler.isUnlocked(item) ? Type.SUCCEEDED : Type.FAILED;
+        item = persistenceHandler.get(item);
         notifyRewardListeners(item, type, createFromCodeTrigger(item));
     }
 
@@ -121,7 +122,7 @@ public final class RewardManager<M> implements IRewardManager<M> {
     @Override
     public void triggerUnlock(M item) {
         if (!persistenceHandler.isUnlocked(item)) {
-            persistenceHandler.unlock(item, TRIGGERED_FROM_CODE);
+            item = persistenceHandler.unlock(item, TRIGGERED_FROM_CODE);
             notifyRewardListeners(item, Type.SUCCEEDED, createFromCodeTrigger(item));
         }
     }
@@ -176,7 +177,7 @@ public final class RewardManager<M> implements IRewardManager<M> {
         List<M> resourceIDs = triggerResourceBindingMap.get(trigger);
         for (M item : resourceIDs) {
             if (!persistenceHandler.isUnlocked(item)) {
-                notifyPersistenceHandler(item, type, trigger.getName());
+                item = notifyPersistenceHandler(item, type, trigger.getName());
                 notifyRewardListeners(item, type, trigger);
             }
         }
@@ -197,16 +198,14 @@ public final class RewardManager<M> implements IRewardManager<M> {
                     }
     }
 
-    private void notifyPersistenceHandler(M item, Type type, String triggerName) {
-        if (persistenceHandler != null) {
-            switch (type) {
-                case SUCCEEDED:
-                    persistenceHandler.unlock(item, triggerName);
-                    break;
-                case FAILED:
-                    persistenceHandler.lock(item, triggerName);
-                    break;
-            }
+    private M notifyPersistenceHandler(M item, Type type, String triggerName) {
+        switch (type) {
+            case SUCCEEDED:
+                return persistenceHandler.unlock(item, triggerName);
+            case FAILED:
+                return persistenceHandler.lock(item, triggerName);
+            default:
+                throw new RuntimeException(String.format("Unknown Type: %s", type.toString()));
         }
     }
 
