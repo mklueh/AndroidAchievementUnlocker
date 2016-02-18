@@ -2,8 +2,8 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.0"
-
+    buildToolsVersion "23.0.1"
+    com.android.ddmlib.DdmPreferences.setTimeOut(60000)
     defaultConfig {
         applicationId "com.kluehspies.marian.example"
         minSdkVersion 11
