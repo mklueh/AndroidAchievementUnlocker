@@ -3,7 +3,8 @@ apply plugin: 'com.android.library'
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.1"
-    com.android.ddmlib.DdmPreferences.setTimeOut(60000)
+    com.android.ddmlib.DdmPreferences.setTimeOut(600000)
+	adbOptions { timeOutInMs 600000 }
     defaultConfig {
         minSdkVersion 11
         targetSdkVersion 23
